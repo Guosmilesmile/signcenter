@@ -1,5 +1,6 @@
 package com.edu.gy.user.dao;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -8,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.runner.Request;
 
 import com.edu.gy.annotation.ColumnName;
 import com.edu.gy.annotation.TableName;
@@ -102,6 +105,46 @@ public class UserDaoImpl extends BaseDaoImpl<UserEntity> implements IUserDao{
 			}
 		}
 		return total;
+	}
+
+
+	@Override
+	public UserEntity AuthenUser(UserEntity userEntity) {
+		Integer total = 0;
+		Class clzz = userEntity.getClass();
+		TableName anotation = (TableName) clzz.getAnnotation(TableName.class);
+		String tableName = anotation.tablename();
+		Connection con = null;
+		PreparedStatement pre = null;
+		ResultSet resultSet = null;
+		UserEntity result = new UserEntity();
+		try {
+			con = DBUtil.openConnection();
+			String sql = "select id,role from "+tableName+" where userid =? and password = ?";
+			System.out.println(sql);
+			pre = con.prepareStatement(sql);
+			pre.setString(1, userEntity.getUserId());
+			pre.setString(2, userEntity.getPassWord());
+			resultSet = pre.executeQuery();
+			while(resultSet.next()){
+				Integer id = resultSet.getInt(1);
+				Integer role = resultSet.getInt(2);
+				userEntity.setId(id);
+				userEntity.setRole(role);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return userEntity;
+		}finally{
+			try {
+				resultSet.close();
+				pre.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return userEntity;
 	}
 
 }

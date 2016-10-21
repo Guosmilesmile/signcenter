@@ -15,7 +15,7 @@ public class TextUtils {
 	 * @param text
 	 * @return
 	 */
-	public static boolean isEmpty(String text) {
+	public static boolean isEmpty(Object text) {
 		if (null == text || "".equals(text)) {
 			return true;
 		}

@@ -23,4 +23,10 @@ public interface IUserDao extends BaseDao<UserEntity>{
 	 */
 	public Integer getUserEntityCount();
 	
+	/**
+	 * 判断用户的账号密码是否正确
+	 * @param userEntity
+	 * @return
+	 */
+	public UserEntity AuthenUser(UserEntity userEntity);
 }

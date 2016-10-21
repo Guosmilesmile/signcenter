@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="shortcut icon" href="http://static.hdslb.com/images/favicon.ico">
-<title>用户管理</title>
+<title>课程管理</title>
 
 <link rel="stylesheet" type="text/css" href="<%=basePath%>css/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>assets/style.css" />
@@ -33,7 +33,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	//初始化数据函数
 	function getData(queryParams){
 		$('#grid').datagrid({
-			url: '<%=basePath%>GetUserDataServlet',
+			url: '<%=basePath%>GetCourseDataServlet',
 			queryParams: queryParams,
 			remoteSort:false,
 			nowrap: false, //换行属性
@@ -51,33 +51,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			]],
 			columns: [[
 				{field:'id',title:'ID',sortable:true,width:60,sortable:true,hidden:true},
-				{field:'userId',title:'用户名',sortable:true,width:200,sortable:true,
+				{field:'courseName',title:'课程名',sortable:true,width:200,sortable:true,
 					editor: { type: 'validatebox' }
 				},
-				{field:'passWord',title:'密码',sortable:true,width:200,sortable:true,
-					editor: { type: 'validatebox' }
-				},
-				{field:'role',title:'角色',sortable:true,width:120,sortable:true,
-					editor:{
-                		type : 'combobox',
-                		options : {
-                			valueField: "value", textField: "text"  ,
-                        	data:[{"value": "0", "text": "管理员"},{"value": "1", "text": "学生"},{"value": "2", "text": "老师"}],
-                        	editable:false ,
-                		}
-                    },
-					formatter:function(value,row,index){
-						if(1==value){
-							return "学生";
-						}else if(0==value){
-							return "管理员";
-						}else if(2==value){
-							return "老师";
-						}
-						
-					}
-				},
-				{field:'nickName',title:'名称',sortable:true,width:150,sortable:true,
+				{field:'teacherName',title:'教师名',sortable:true,width:200,sortable:true,
 					editor: { type: 'validatebox' }
 				},
 			]],

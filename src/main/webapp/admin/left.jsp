@@ -44,7 +44,7 @@
                 </li>
                 <li><a href="#"><img src="<%=basePath%>img/icons/menu/calendar.png" alt="" />签到管理</a>
                     <ul >
-                         <li class="current"><a target="rightFrame" href="./mongomonitorHistory.jsp">课程管理</a></li>
+                         <li class="current"><a target="rightFrame" href="./managecourse.jsp">课程管理</a></li>
                          <li ><a target="rightFrame" href="./mongomonitor.jsp">签到管理</a></li>
                     </ul>
                 </li>
