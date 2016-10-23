@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="shortcut icon" href="http://static.hdslb.com/images/favicon.ico">
-<title>课程时间管理</title>
+<title>签到管理管理</title>
 
 <link rel="stylesheet" type="text/css" href="<%=basePath%>css/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>assets/style.css" />
@@ -30,18 +30,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.datagrid-btable tr{height: 30px;}
 </style>
 <script>
-
-	var chine = ["一","二","三","四","五","六","七",]
-	//获取链接数据
-	function getUrlParam(name) {
-	    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-	    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
-	    if (r != null) return unescape(r[2]); return null; //返回参数值
-	}; 
 	//初始化数据函数
 	function getData(queryParams){
 		$('#grid').datagrid({
-			url: '<%=basePath%>getClassTimeDataServlet',
+			url: '<%=basePath%>GetCourseDataServlet',
 			queryParams: queryParams,
 			remoteSort:false,
 			nowrap: false, //换行属性
@@ -54,59 +46,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        pageList: [5,10,15,20,25,50,100],//可以设置每页记录条数的列表  
 	        pagination: true,//是否这是分页
 			rownumbers:true,
-			frozenColumns:[[
-				{field: 'ck', checkbox: true},          
-			]],
 			columns: [[
 				{field:'id',title:'ID',sortable:true,width:60,sortable:true,hidden:true},
-				{field:'index',title:'序列',sortable:true,width:120,sortable:true,
+				{field:'courseName',title:'课程名',sortable:true,width:200,sortable:true,
 					editor: { type: 'validatebox' }
 				},
-				{field:'classtime',title:'上课时间',sortable:true,width:200,sortable:true,
+				{field:'teacherName',title:'教师名',sortable:true,width:200,sortable:true,
+				},
+				{field:'operator',title:'操作',sortable:true,width:120,sortable:true,
 					formatter:function(value,row,index){
-						var items = value.split("_");
-						var str = "";
-						if(items[0]=="1"){
-							str +="单周";
-						}else{
-							str +="双周";
-						}
-						str += "星期"+chine[parseInt(items[1])-1]+"第"+items[2]+"-"+(parseInt(items[2])+1)+"节";
-						return str;
+						return "<a href='javascript:void(0)' class='easyui-linkbutton redoClass' onclick='manageClick("+index+")' name='unopera' ></a>";
 					},
-					editor: { type: 'validatebox' }
 				},
-				{field:'count',title:'总节数',sortable:true,width:120,sortable:true,
-					editor: { type: 'validatebox' }
-				},
-				
 			]],
 			toolbar:[
-				{//返回
-					   text:"返回",
-					   iconCls: "icon-back",
-					   handler: returnData,
-				},'-',
-				{//添加数据
-					   text:"添加",
-					   iconCls: "icon-add",
-					   handler: addData,
-				},'-',
-				{//修改数据
-					   text:"编辑",
-					   iconCls: "icon-edit",
-					   handler: editData,
-				},'-',
-				{//修改数据
-					   text:"保存",
-					   iconCls: "icon-save",
-					   handler: saveData,
-				},'-',
-				{//删除数据
-					   text:"删除",
-					   iconCls: "icon-remove",
-					   handler: removeData,
-				},'-',
+				
 			],
 			onAfterEdit: function(rowIndex,rowData,changes){
 				doedit = undefined;
@@ -122,6 +76,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			},
 			onLoadSuccess:function(data){//数据刷新的时候，编辑的坐标设为空
 				doedit = undefined;
+				$("a[name='unopera']").linkbutton({text:'选择班级',plain:true,iconCls:'icon-lock'});  
 			},
 			
 		});
@@ -240,7 +195,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					//原来代码开始的位置
 					var ids = [];
 					for(var i = 0; i < rows.length; ++i){
-							ids[i] = rows[i].id;
+						ids[i] = rows[i].id;
 					}	
 					$.ajax({
 			    		type:'post',
@@ -308,48 +263,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 		});
     }
-	//------------------返回---------------------
-    function  returnData(){
-    	var url = "<%=basePath%>admin/managecourseclass.jsp?courseid="+courseid;
+    
+    //---------------进入课程内部管理----------------
+    function manageClick(value){
+    	var data = $('#grid').datagrid('getRows');
+		var id = data[value].id;
+		var url = "<%=basePath%>admin/managesignclass.jsp?courseid="+id;
 		location.href=url;
     }
-    //------------------编辑学生名单---------------------
-    function editStudent(){
-    	var row = $('#grid').datagrid('getSelected');
-		if(row){
-			var classid = row.id;
-			var url = "<%=basePath%>admin/manageclassstudent.jsp?classid="+classid+"&courseid="+courseid;
-			location.href=url;
-		}else{
-			$.messager.alert('警告','请选择需要编辑的数据','error');
-		};
-    	
-    }
     
-  //----------------------获取链接数据---------------------
-	function getUrlParam(name) {
-	    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-	    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
-	    if (r != null) return unescape(r[2]); return null; //返回参数值
-	}; 
-	var courseid = -1;
-	var classid = -1;
     $(document).ready(function(){
-    	courseid = getUrlParam('courseid');
-    	classid = getUrlParam('classid');
-    	if(null==courseid){
-    		var url = "<%=basePath%>admin/managecourse.jsp";
-    		location.href=url;
-    	}else{
-    		if(null==classid){
-    			var url = "<%=basePath%>admin/managecourseclass.jsp?courseid="+courseid;
-    			location.href=url;
-        	}else{
-        		var queryParams;
-        		queryParams = {'classid':classid};
-        		getData(queryParams);
-        	}
-    	}
+    	
     });
 </script>
 <style type="text/css">

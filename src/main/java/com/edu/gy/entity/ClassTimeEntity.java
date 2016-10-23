@@ -12,15 +12,18 @@ import com.edu.gy.annotation.TableName;
 public class ClassTimeEntity {
 	private Integer id;
 	private Integer classid;
-	private String classtime;
-	private Integer index;
+	private String classtime;//1_1_3   单双周_星期_开始节数
+	private Integer index;//序列号，判断跨班上课
+	private Integer count;//次数
+	
 	public ClassTimeEntity(Integer id, Integer classid, String classtime,
-			Integer index) {
+			Integer index, Integer count) {
 		super();
 		this.id = id;
 		this.classid = classid;
 		this.classtime = classtime;
 		this.index = index;
+		this.count = count;
 	}
 	public ClassTimeEntity() {
 		super();
@@ -52,5 +55,12 @@ public class ClassTimeEntity {
 	}
 	public void setIndex(Integer index) {
 		this.index = index;
+	}
+	@ColumnName(columnName="count")
+	public Integer getCount() {
+		return count;
+	}
+	public void setCount(Integer count) {
+		this.count = count;
 	}
 }	

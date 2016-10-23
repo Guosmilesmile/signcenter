@@ -38,14 +38,14 @@
         <div id="sidebar">
             <ul id="sidebarul">
             	<li><a href="#"><img src="<%=basePath%>img/icons/menu/brush.png" alt="" />系统管理</a>
-                    <ul >
+                    <ul class="subul">
                          <li class="current"><a target="rightFrame" href="./manageuser.jsp">用户管理</a></li>
                     </ul>
                 </li>
                 <li><a href="#"><img src="<%=basePath%>img/icons/menu/calendar.png" alt="" />签到管理</a>
-                    <ul >
+                    <ul class="subul">
                          <li class="current"><a target="rightFrame" href="./managecourse.jsp">课程管理</a></li>
-                         <li ><a target="rightFrame" href="./mongomonitor.jsp">签到管理</a></li>
+                         <li ><a target="rightFrame" href="./managesign.jsp">签到管理</a></li>
                     </ul>
                 </li>
             </ul>

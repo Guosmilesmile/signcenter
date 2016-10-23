@@ -13,6 +13,7 @@ import com.edu.gy.annotation.ColumnName;
 import com.edu.gy.annotation.TableName;
 import com.edu.gy.base.BaseDaoImpl;
 import com.edu.gy.classstudent.vo.ClassStudentVO;
+import com.edu.gy.classtime.vo.ClassTimeCountEntity;
 import com.edu.gy.entity.ClassTimeEntity;
 import com.edu.gy.entity.CourseClassEntity;
 import com.edu.gy.utils.DBUtil;
@@ -105,5 +106,45 @@ public class ClassTimeDaoImpl extends BaseDaoImpl<ClassTimeEntity> implements IC
 			}
 		}
 		return total;
+	}
+
+	@Override
+	public List<ClassTimeCountEntity> getClassTimeCount(Integer ctid) {
+		if(null==ctid){
+			return null;
+		}
+		Integer total = 0;
+		Connection con = null;
+		PreparedStatement pre = null;
+		ResultSet resultSet = null;
+		Class  clzz = ClassTimeEntity.class;
+		TableName annotation = (TableName) clzz.getAnnotation(TableName.class);
+		String tableName = annotation.tablename();
+		try {
+			con = DBUtil.openConnection();
+			String sql = "select count from "+tableName+" where id = "+ctid;
+			System.out.println(sql);
+			pre = con.prepareStatement(sql);
+			resultSet = pre.executeQuery();
+			while(resultSet.next()){
+				total = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				resultSet.close();
+				pre.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		List<ClassTimeCountEntity> list = new ArrayList<ClassTimeCountEntity>();
+		for(int i=0;i<total ;i++){
+			ClassTimeCountEntity classTimeCountEntity = new ClassTimeCountEntity(i+1,i+1);
+			list.add(classTimeCountEntity);
+		}
+		return list;
 	}
 }

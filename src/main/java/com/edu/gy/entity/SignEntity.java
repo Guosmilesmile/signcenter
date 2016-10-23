@@ -14,7 +14,8 @@ public class SignEntity {
 	private Integer userid;
 	private Integer classid;
 	private Long timestamp;
-	private Integer situation;
+	private Integer situation;//签到状况0-迟到，1-旷课，2-正常签到
+	private Integer index;;//第几次课
 	@ColumnName(columnName="id")
 	public Integer getId() {
 		return id;
@@ -47,20 +48,30 @@ public class SignEntity {
 	public Integer getSituation() {
 		return situation;
 	}
+	
 	public void setSituation(Integer situation) {
 		this.situation = situation;
 	}
+	
 	public SignEntity(Integer id, Integer userid, Integer classid,
-			Long timestamp, Integer situation) {
+			Long timestamp, Integer situation, Integer index) {
 		super();
 		this.id = id;
 		this.userid = userid;
 		this.classid = classid;
 		this.timestamp = timestamp;
 		this.situation = situation;
+		this.index = index;
 	}
 	public SignEntity() {
 		super();
+	}
+	@ColumnName(columnName="index")
+	public Integer getIndex() {
+		return index;
+	}
+	public void setIndex(Integer index) {
+		this.index = index;
 	}
 	
 }

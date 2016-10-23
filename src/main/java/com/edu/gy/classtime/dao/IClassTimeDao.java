@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.edu.gy.base.BaseDao;
 import com.edu.gy.classstudent.vo.ClassStudentVO;
+import com.edu.gy.classtime.vo.ClassTimeCountEntity;
 import com.edu.gy.entity.ClassTimeEntity;
 import com.edu.gy.utils.DBUtil;
 
@@ -34,4 +35,16 @@ public interface IClassTimeDao extends BaseDao<ClassTimeEntity>{
 	 * @return
 	 */
 	public Integer getClassTimeEntitiesCount(Integer classid);
+	
+	
+	/**
+	 * 获取总上课次数
+	 * @param start
+	 * @param pagesize
+	 * @param classid
+	 * @return
+	 */
+	public List<ClassTimeCountEntity> getClassTimeCount(Integer ctid);
+
+	
 }

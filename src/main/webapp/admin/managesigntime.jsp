@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="shortcut icon" href="http://static.hdslb.com/images/favicon.ico">
-<title>课程时间管理</title>
+<title>签到班级课程选择</title>
 
 <link rel="stylesheet" type="text/css" href="<%=basePath%>css/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>assets/style.css" />
@@ -59,9 +59,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			]],
 			columns: [[
 				{field:'id',title:'ID',sortable:true,width:60,sortable:true,hidden:true},
-				{field:'index',title:'序列',sortable:true,width:120,sortable:true,
-					editor: { type: 'validatebox' }
-				},
 				{field:'classtime',title:'上课时间',sortable:true,width:200,sortable:true,
 					formatter:function(value,row,index){
 						var items = value.split("_");
@@ -76,9 +73,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					},
 					editor: { type: 'validatebox' }
 				},
-				{field:'count',title:'总节数',sortable:true,width:120,sortable:true,
-					editor: { type: 'validatebox' }
-				},
 				
 			]],
 			toolbar:[
@@ -87,25 +81,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   iconCls: "icon-back",
 					   handler: returnData,
 				},'-',
-				{//添加数据
-					   text:"添加",
-					   iconCls: "icon-add",
-					   handler: addData,
-				},'-',
 				{//修改数据
-					   text:"编辑",
+					   text:"选择",
 					   iconCls: "icon-edit",
-					   handler: editData,
-				},'-',
-				{//修改数据
-					   text:"保存",
-					   iconCls: "icon-save",
-					   handler: saveData,
-				},'-',
-				{//删除数据
-					   text:"删除",
-					   iconCls: "icon-remove",
-					   handler: removeData,
+					   handler: chooseCount,
 				},'-',
 			],
 			onAfterEdit: function(rowIndex,rowData,changes){
@@ -136,7 +115,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//获取数据库全部数据
 			},
 		});
-		$('#searchdialog').dialog('close');
 	};
 	
 	function myformatter(value) {//时间转换函数
@@ -185,140 +163,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		queryParams = {};
 		getData(queryParams);
 	});
-    //-----------------------编辑------------------------------------------------
-    function editData(){//编辑
-    	var row = $('#grid').datagrid('getSelected');
-		if(row){
-			if(doedit!=null){
-				$('#grid').datagrid('endEdit',doedit);
-				var rowIndex = $('#grid').datagrid('getRowIndex', row);
-				$('#grid').datagrid('beginEdit',rowIndex);
-				doedit = rowIndex;
-			}
-			if(doedit == undefined){
-				var rowIndex = $('#grid').datagrid('getRowIndex', row);
-				$('#grid').datagrid('beginEdit',rowIndex);
-				doedit = rowIndex;
-			}
-		}else{
-			$.messager.alert('警告','请选择需要编辑的数据','error');
-		};
-    }
-    //---------------------------------添加----------------------------------------
-    function addData(){
-    	if(doedit != undefined){
-			//$('#grid').datagrid('endEdit',doedit);
-		}
-		if(doedit == undefined){
-			var row = $('#grid').datagrid('getSelected');
-			var rowIndex = $('#grid').datagrid('getRowIndex', row);
-			if(row!=null){
-				rowIndex = $('#grid').datagrid('getRowIndex', row);
-				rowIndex = rowIndex + 1;
-			}
-			else{
-				rowIndex = 0;
-			}
-			$('#grid').datagrid('insertRow',{
-				index: rowIndex,
-				row: {
-				}
-			});
-			$('#grid').datagrid('beginEdit',rowIndex);
-			doedit = rowIndex;
-		}
-    }
-    //-------------------------------删除-------------------------------------------
-    function removeData(){
-    	var rows = $('#grid').datagrid('getSelections');
-		if(rows.length <= 0){
-			$.messager.alert('警告','您没有选择','error');
-		}
-		else if(rows.length >= 1){
-			$.messager.confirm("操作警告", "确定删除后将不可恢复！！", function(data){
-				if(data){
-					//原来代码开始的位置
-					var ids = [];
-					for(var i = 0; i < rows.length; ++i){
-							ids[i] = rows[i].id;
-					}	
-					$.ajax({
-			    		type:'post',
-			    		url:"<%=basePath%>",
-			    		data:{ids: ids.toString()},
-			    		success:function(data){
-			    			if(1==data){//成功
-			    				$.messager.alert('提示','删除成功','info');
-			    			}else{
-			    				$.messager.alert('提示','删除失败','error');
-			    			}
-			    			$('#grid').datagrid('reload');
-			    		},error:function(){
-			    			console.log("fail");
-			    		}
-			    	});	
-					
-				}
-			});
-		}
-    }
-    //-------------------------------保存-------------------------------------------
-	function saveData(){//保存
-		$.messager.confirm("操作警告", "确定保存后被修改的数据将不可恢复！！", function(data){
-			if(data){
-				$('#grid').datagrid('endEdit', doedit);
-				var inserted = $('#grid').datagrid('getChanges', 'inserted');
-				var updated = $('#grid').datagrid('getChanges', 'updated');
-				var insertrow = JSON.stringify(inserted);
-				var updatedrow = JSON.stringify(updated);
-				if (updated.length > 0) {  
-					$.ajax({
-			    		type:'post',
-			    		url:"<%=basePath%>",
-			    		data:{"rowstr":updatedrow},
-			    		success:function(data){
-			    			if(1==data){//成功
-			    				$.messager.alert('提示','更新成功','info');
-			    			}else{
-			    				$.messager.alert('提示','更新失败','error');
-			    			}
-			    			$('#grid').datagrid('reload');
-			    		},error:function(){
-			    			console.log("fail");
-			    		}
-			    	});			       
-			    }
-				if (inserted.length > 0) {  
-					$.ajax({
-			    		type:'post',
-			    		url:"<%=basePath%>",
-			    		data:{"rowstr":insertrow},
-			    		success:function(data){
-			    			if(1==data){//成功
-			    				$.messager.alert('提示','添加成功','info');
-			    			}else{
-			    				$.messager.alert('提示','添加失败','error');
-			    			}
-			    			$('#grid').datagrid('reload');
-			    		},error:function(){
-			    			console.log("fail");
-			    		}
-			    	});			       
-			    } 
-			}
-		});
-    }
+    
 	//------------------返回---------------------
     function  returnData(){
-    	var url = "<%=basePath%>admin/managecourseclass.jsp?courseid="+courseid;
+    	var url = "<%=basePath%>admin/managesignclass.jsp?courseid="+courseid;
 		location.href=url;
     }
-    //------------------编辑学生名单---------------------
-    function editStudent(){
+    //------------------选择课程次数---------------------
+    function chooseCount(){
     	var row = $('#grid').datagrid('getSelected');
 		if(row){
-			var classid = row.id;
-			var url = "<%=basePath%>admin/manageclassstudent.jsp?classid="+classid+"&courseid="+courseid;
+			var ctid = row.id;
+			var url = "<%=basePath%>admin/managesignclasscount.jsp?ctid="+ctid+"&courseid="+courseid+"&classid="+classid;
 			location.href=url;
 		}else{
 			$.messager.alert('警告','请选择需要编辑的数据','error');
@@ -338,11 +194,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	courseid = getUrlParam('courseid');
     	classid = getUrlParam('classid');
     	if(null==courseid){
-    		var url = "<%=basePath%>admin/managecourse.jsp";
+    		var url = "<%=basePath%>admin/managesign.jsp";
     		location.href=url;
     	}else{
     		if(null==classid){
-    			var url = "<%=basePath%>admin/managecourseclass.jsp?courseid="+courseid;
+    			var url = "<%=basePath%>admin/managesignclass.jsp?courseid="+courseid;
     			location.href=url;
         	}else{
         		var queryParams;
