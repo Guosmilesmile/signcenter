@@ -1,4 +1,4 @@
-package com.edu.gy.course.viewentity;
+package com.edu.gy.course.vo;
 
 /**
  * 课程显示类

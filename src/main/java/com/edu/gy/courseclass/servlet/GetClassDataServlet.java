@@ -1,4 +1,4 @@
-package com.edu.gy.course.servlet;
+package com.edu.gy.courseclass.servlet;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -11,31 +11,32 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.edu.gy.course.dao.CourseDaoImpl;
-import com.edu.gy.course.dao.ICourseDao;
 import com.edu.gy.course.vo.CourseVO;
+import com.edu.gy.courseclass.dao.CourseClassDaoImpl;
+import com.edu.gy.courseclass.dao.ICourseClassDao;
+import com.edu.gy.entity.CourseClassEntity;
 import com.edu.gy.utils.FastJsonTool;
+import com.edu.gy.utils.TextUtils;
 
 /**
- * Servlet implementation class GetCourseDataServlet
+ * Servlet implementation class GetClassDataServlet
  */
-@WebServlet("/GetCourseDataServlet")
-public class GetCourseDataServlet extends HttpServlet {
+@WebServlet("/GetClassDataServlet")
+public class GetClassDataServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private ICourseDao courseDao = new CourseDaoImpl();  
+    private ICourseClassDao courseClassDao = new CourseClassDaoImpl();
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetCourseDataServlet() {
+    public GetClassDataServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		this.doPost(request, response);
 	}
 
 	/**
@@ -47,21 +48,15 @@ public class GetCourseDataServlet extends HttpServlet {
 		response.setContentType("text/html; charset=GBK");
 		int pageSize = Integer.parseInt(request.getParameter("rows"));
 		int page = Integer.parseInt(request.getParameter("page"));
-		Map<String, Object> map = new HashMap<String, Object>();
-		Object sessUserid = request.getSession().getAttribute("userid");
-		Object sessRole =  request.getSession().getAttribute("role");
-		String userid = null;
-		if(null==sessUserid || null== sessRole){
-			
-		}else{
-			if("0".equals(sessRole)){
-				userid= "-1";
-			}else{
-				userid = sessUserid+"";
-			}
+		String temp  = request.getParameter("courseid");
+		if(TextUtils.isEmpty(temp)){
+			response.getWriter().write("");
+			return ;
 		}
-		List<CourseVO> list = courseDao.getCourseEntities( (page-1)*pageSize, pageSize,userid);
-		Integer total = courseDao.getCourseEntitiesCount(userid);
+		int courseid = Integer.parseInt(temp);
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<CourseClassEntity> list = courseClassDao.getClassEntitiesWithCourseid( (page-1)*pageSize, pageSize,courseid);
+		Integer total = courseClassDao.getClassEntitiesWithCourseidCount(courseid);
 		map.put("rows", list);
 		map.put("total", total);
 		response.getWriter().write(FastJsonTool.createJsonString(map));

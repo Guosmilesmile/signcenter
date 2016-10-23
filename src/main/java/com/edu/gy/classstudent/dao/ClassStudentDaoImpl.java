@@ -1,5 +1,7 @@
-package com.edu.gy.course.dao;
+package com.edu.gy.classstudent.dao;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,38 +9,39 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.edu.gy.annotation.ColumnName;
+import com.edu.gy.annotation.TableName;
 import com.edu.gy.base.BaseDaoImpl;
+import com.edu.gy.classstudent.vo.ClassStudentVO;
 import com.edu.gy.course.vo.CourseVO;
-import com.edu.gy.entity.CourseEntity;
+import com.edu.gy.entity.ClassStudentEntity;
+import com.edu.gy.entity.CourseClassEntity;
 import com.edu.gy.utils.DBUtil;
 
-public class CourseDaoImpl extends BaseDaoImpl<CourseEntity> implements ICourseDao{
+public class ClassStudentDaoImpl extends BaseDaoImpl<ClassStudentVO> implements IClassStudentDao{
 
 	@Override
-	public List<CourseVO> getCourseEntities(int start, int pagesize,String userid) {
-		if(null==userid){
+	public List<ClassStudentVO> getClassStudentEntities(int start,int pagesize, Integer classid) {
+		if(null==classid){
 			return null;
 		}
-		List<CourseVO> list = new ArrayList<CourseVO>();
+		List<ClassStudentVO> list = new ArrayList<ClassStudentVO>();
 		Connection con = null;
 		PreparedStatement pre = null;
 		ResultSet resultSet = null;
 		try {
 			con = DBUtil.openConnection();
-			String sql = "select c_course.id,c_course.name,u_user.nickname from u_user,c_course where  u_user.id = c_course.userid and ";
-			if(!"-1".equals(userid)){
-				sql += " u_user.userid = "+ userid+" and ";
-			}
-			sql += " 1=1  limit "+start+","+pagesize;
+			String sql = "select A.id,B.userid,B.nickname from cs_classstudent as A,u_user as B  where A.userid = B.id and A.classid = "+classid;
+			sql += " and  1=1  limit "+start+","+pagesize;
 			System.out.println(sql);
 			pre = con.prepareStatement(sql);
 			resultSet = pre.executeQuery();
 			while(resultSet.next()){
 				Integer id = resultSet.getInt(1);
-				String name = resultSet.getString(2);
+				String userid = resultSet.getString(2);
 				String nickname = resultSet.getString(3);
-				CourseVO courseVO = new CourseVO(id,name,nickname);
-				list.add(courseVO);
+				ClassStudentVO classStudentEntity = new ClassStudentVO(id,userid,nickname);
+				list.add(classStudentEntity);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -52,12 +55,11 @@ public class CourseDaoImpl extends BaseDaoImpl<CourseEntity> implements ICourseD
 			}
 		}
 		return list;
-		
 	}
 
 	@Override
-	public Integer getCourseEntitiesCount(String userid) {
-		if(null==userid){
+	public Integer getClassStudentEntitiesCount(Integer classid) {
+		if(null==classid){
 			return null;
 		}
 		Integer total = 0;
@@ -66,11 +68,8 @@ public class CourseDaoImpl extends BaseDaoImpl<CourseEntity> implements ICourseD
 		ResultSet resultSet = null;
 		try {
 			con = DBUtil.openConnection();
-			String sql = "select count(*) from u_user,c_course where  u_user.id = c_course.userid and ";
-			if(!"-1".equals(userid)){
-				sql += " u_user.userid = "+ userid+" and ";
-			}
-			sql += " 1=1 ";
+			String sql = "select count(A.id)  from cs_classstudent as A,u_user as B  where A.userid = B.id and A.classid = "+classid;
+			sql += " and  1=1 ";
 			System.out.println(sql);
 			pre = con.prepareStatement(sql);
 			resultSet = pre.executeQuery();

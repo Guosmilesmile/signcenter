@@ -3,7 +3,7 @@ package com.edu.gy.course.dao;
 import java.util.List;
 
 import com.edu.gy.base.BaseDao;
-import com.edu.gy.course.viewentity.CourseVO;
+import com.edu.gy.course.vo.CourseVO;
 import com.edu.gy.entity.CourseEntity;
 
 /**

@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="shortcut icon" href="http://static.hdslb.com/images/favicon.ico">
-<title>课程管理</title>
+<title>课程班级管理</title>
 
 <link rel="stylesheet" type="text/css" href="<%=basePath%>css/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>assets/style.css" />
@@ -30,10 +30,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.datagrid-btable tr{height: 30px;}
 </style>
 <script>
+
+	//获取链接数据
+	function getUrlParam(name) {
+	    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+	    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+	    if (r != null) return unescape(r[2]); return null; //返回参数值
+	}; 
 	//初始化数据函数
 	function getData(queryParams){
 		$('#grid').datagrid({
-			url: '<%=basePath%>GetCourseDataServlet',
+			url: '<%=basePath%>GetClassDataServlet',
 			queryParams: queryParams,
 			remoteSort:false,
 			nowrap: false, //换行属性
@@ -51,26 +58,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			]],
 			columns: [[
 				{field:'id',title:'ID',sortable:true,width:60,sortable:true,hidden:true},
-				{field:'courseName',title:'课程名',sortable:true,width:200,sortable:true,
+				{field:'classname',title:'班级名',sortable:true,width:200,sortable:true,
 					editor: { type: 'validatebox' }
-				},
-				{field:'teacherName',title:'教师名',sortable:true,width:200,sortable:true,
-					editor: { type: 'validatebox' }
-				},
-				{field:'operator',title:'操作',sortable:true,width:120,sortable:true,
-					formatter:function(value,row,index){
-						return "<a href='javascript:void(0)' class='easyui-linkbutton redoClass' onclick='manageClick("+index+")' name='unopera' ></a>";
-					},
 				},
 			]],
 			toolbar:[
+				{//返回
+					   text:"返回",
+					   iconCls: "icon-back",
+					   handler: returnData,
+				},'-',
 				{//添加数据
 					   text:"添加",
 					   iconCls: "icon-add",
 					   handler: addData,
 				},'-',
 				{//修改数据
-					   text:"编辑",
+					   text:"编辑信息",
+					   iconCls: "icon-edit",
+					   handler: editData,
+				},'-',
+				{//修改数据
+					   text:"编辑学生名单",
+					   iconCls: "icon-edit",
+					   handler: editStudent,
+				},'-',
+				{//修改数据
+					   text:"编辑上课时间",
 					   iconCls: "icon-edit",
 					   handler: editData,
 				},'-',
@@ -99,7 +113,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			},
 			onLoadSuccess:function(data){//数据刷新的时候，编辑的坐标设为空
 				doedit = undefined;
-				$("a[name='unopera']").linkbutton({text:'课程管理',plain:true,iconCls:'icon-lock'});  
 			},
 			
 		});
@@ -315,20 +328,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 		});
     }
-    
-    //---------------进入课程内部管理----------------
-    function manageClick(value){
-    	var data = $('#grid').datagrid('getRows');
-		var id = data[value].id;
-		var url = "<%=basePath%>admin/managecourseclass.jsp?courseid="+id;
+    //------------------返回---------------------
+    function  returnData(){
+    	var url = "<%=basePath%>admin/managecourse.jsp";
 		location.href=url;
     }
+    //------------------编辑学生名单---------------------
+    function editStudent(){
+    	var row = $('#grid').datagrid('getSelected');
+		if(row){
+			var classid = row.id;
+			var url = "<%=basePath%>admin/manageclassstudent.jsp?classid="+classid+"&courseid="+courseid;
+			location.href=url;
+		}else{
+			$.messager.alert('警告','请选择需要编辑的数据','error');
+		};
+    	
+    }
     
+    
+    var courseid = -1;
     $(document).ready(function(){
-    	$('#SelectBtn').click(function(){
-    		//alert("xx");
-    	    $('#importform').submit();
-    	});
+    	courseid = getUrlParam('courseid');
+    	if(null==courseid){
+    		var url = "<%=basePath%>admin/managecourse.jsp";
+    		location.href=url;
+    	}else{
+    		var queryParams;
+    		queryParams = {'courseid':courseid};
+    		getData(queryParams);
+    	}
     });
 </script>
 <style type="text/css">

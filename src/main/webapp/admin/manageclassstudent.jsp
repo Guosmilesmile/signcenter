@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="shortcut icon" href="http://static.hdslb.com/images/favicon.ico">
-<title>课程管理</title>
+<title>班级学生名单管理</title>
 
 <link rel="stylesheet" type="text/css" href="<%=basePath%>css/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>assets/style.css" />
@@ -33,7 +33,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	//初始化数据函数
 	function getData(queryParams){
 		$('#grid').datagrid({
-			url: '<%=basePath%>GetCourseDataServlet',
+			url: '<%=basePath%>getClassStudentDataServlet',
 			queryParams: queryParams,
 			remoteSort:false,
 			nowrap: false, //换行属性
@@ -51,16 +51,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			]],
 			columns: [[
 				{field:'id',title:'ID',sortable:true,width:60,sortable:true,hidden:true},
-				{field:'courseName',title:'课程名',sortable:true,width:200,sortable:true,
+				{field:'userid',title:'用户名',sortable:true,width:200,sortable:true,
 					editor: { type: 'validatebox' }
 				},
-				{field:'teacherName',title:'教师名',sortable:true,width:200,sortable:true,
+				{field:'nickname',title:'名称',sortable:true,width:150,sortable:true,
 					editor: { type: 'validatebox' }
-				},
-				{field:'operator',title:'操作',sortable:true,width:120,sortable:true,
-					formatter:function(value,row,index){
-						return "<a href='javascript:void(0)' class='easyui-linkbutton redoClass' onclick='manageClick("+index+")' name='unopera' ></a>";
-					},
 				},
 			]],
 			toolbar:[
@@ -68,11 +63,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   text:"添加",
 					   iconCls: "icon-add",
 					   handler: addData,
-				},'-',
-				{//修改数据
-					   text:"编辑",
-					   iconCls: "icon-edit",
-					   handler: editData,
 				},'-',
 				{//修改数据
 					   text:"保存",
@@ -83,6 +73,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   text:"删除",
 					   iconCls: "icon-remove",
 					   handler: removeData,
+				},'-',
+				{//导入数据
+					   text:"导入",
+					   iconCls: "icon-add",
+					   handler: importData,
 				},'-',
 			],
 			onAfterEdit: function(rowIndex,rowData,changes){
@@ -99,7 +94,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			},
 			onLoadSuccess:function(data){//数据刷新的时候，编辑的坐标设为空
 				doedit = undefined;
-				$("a[name='unopera']").linkbutton({text:'课程管理',plain:true,iconCls:'icon-lock'});  
 			},
 			
 		});
@@ -235,6 +229,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			doedit = rowIndex;
 		}
     }
+    //----------------------------导入------------------------------------------
+    function importData(){
+    	$('#searchdialog').dialog('open');
+    }
     //-------------------------------删除-------------------------------------------
     function removeData(){
     	var rows = $('#grid').datagrid('getSelections');
@@ -315,20 +313,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 		});
     }
-    
-    //---------------进入课程内部管理----------------
-    function manageClick(value){
-    	var data = $('#grid').datagrid('getRows');
-		var id = data[value].id;
-		var url = "<%=basePath%>admin/managecourseclass.jsp?courseid="+id;
-		location.href=url;
-    }
-    
+	//获取链接数据
+	function getUrlParam(name) {
+	    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+	    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+	    if (r != null) return unescape(r[2]); return null; //返回参数值
+	}; 
+	var courseid = -1;
+	var classid = -1;
     $(document).ready(function(){
-    	$('#SelectBtn').click(function(){
-    		//alert("xx");
-    	    $('#importform').submit();
-    	});
+    	courseid = getUrlParam('courseid');
+    	classid = getUrlParam('classid');
+    	if(null==courseid){
+    		var url = "<%=basePath%>admin/managecourse.jsp";
+    		location.href=url;
+    	}else{
+    		if(null==classid){
+    			var url = "<%=basePath%>admin/managecourseclass.jsp?courseid="+courseid;
+    			location.href=url;
+        	}else{
+        		var queryParams;
+        		queryParams = {'classid':classid};
+        		getData(queryParams);
+        	}
+    	}
     });
 </script>
 <style type="text/css">
@@ -356,6 +364,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </style>
 </head>
 <body  class = "h2">
+	<!-- <div id ="topdiv">
+			job名称: 
+			<select title="Basic example" multiple="multiple" name="example-basic" size="5" id="metacode" style="width:300px">
+			</select>
+	  		<a href="javascript:void(0)" id="SelectBtn" class="easyui-linkbutton" style="width:50px;float:right;height:25px;margin-right: 30px">查询</a>
+	</div> -->
 	<table id="grid"></table>
+	
+	<div id="searchdialog" class="easyui-dialog" title="搜索" style="width:400px;height:200px;"
+    data-options="iconCls:'icon-save',resizable:true,modal:true">
+    	<div id="totalplane" style="margin-top: 55px;padding-left: 60px;">
+    		<form id="importform"  action="<%=basePath%>UserImportFileServlet" enctype="multipart/form-data" method="post">
+	  			<input class="easyui-filebox" name="file1" data-options="prompt:'Choose a file...'" style="width:90%">
+	  			<a href="javascript:void(0)" id="SelectBtn" class="easyui-linkbutton" iconCls="icon-ok" style="width:150px;height:32px;margin-top: 10px;margin-left: 65px">确定</a>
+  			</form>
+  		</div>
+	</div>
+	
 </body>
 </html>
