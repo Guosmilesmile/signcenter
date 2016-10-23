@@ -8,13 +8,13 @@ import com.edu.gy.annotation.TableName;
  * @author Christy
  *
  */
-@TableName(tablename="ct_coursetime")
-public class CourseTimeEntity {
+@TableName(tablename="ct_classtime")
+public class ClassTimeEntity {
 	private Integer id;
 	private Integer classid;
 	private String classtime;
 	private Integer index;
-	public CourseTimeEntity(Integer id, Integer classid, String classtime,
+	public ClassTimeEntity(Integer id, Integer classid, String classtime,
 			Integer index) {
 		super();
 		this.id = id;
@@ -22,7 +22,7 @@ public class CourseTimeEntity {
 		this.classtime = classtime;
 		this.index = index;
 	}
-	public CourseTimeEntity() {
+	public ClassTimeEntity() {
 		super();
 	}
 	@ColumnName(columnName="id")

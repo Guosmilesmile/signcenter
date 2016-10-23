@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="shortcut icon" href="http://static.hdslb.com/images/favicon.ico">
-<title>班级学生名单管理</title>
+<title>课程时间管理</title>
 
 <link rel="stylesheet" type="text/css" href="<%=basePath%>css/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>assets/style.css" />
@@ -30,10 +30,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.datagrid-btable tr{height: 30px;}
 </style>
 <script>
+
+	var chine = ["一","二","三","四","五","六","七",]
+	//获取链接数据
+	function getUrlParam(name) {
+	    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+	    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+	    if (r != null) return unescape(r[2]); return null; //返回参数值
+	}; 
 	//初始化数据函数
 	function getData(queryParams){
 		$('#grid').datagrid({
-			url: '<%=basePath%>getClassStudentDataServlet',
+			url: '<%=basePath%>getClassTimeDataServlet',
 			queryParams: queryParams,
 			remoteSort:false,
 			nowrap: false, //换行属性
@@ -51,12 +59,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			]],
 			columns: [[
 				{field:'id',title:'ID',sortable:true,width:60,sortable:true,hidden:true},
-				{field:'userid',title:'用户名',sortable:true,width:200,sortable:true,
+				{field:'index',title:'序列',sortable:true,width:120,sortable:true,
 					editor: { type: 'validatebox' }
 				},
-				{field:'nickname',title:'名称',sortable:true,width:150,sortable:true,
+				{field:'classtime',title:'上课时间',sortable:true,width:200,sortable:true,
+					formatter:function(value,row,index){
+						var items = value.split("_");
+						var str = "";
+						if(items[0]=="1"){
+							str +="单周";
+						}else{
+							str +="双周";
+						}
+						str += "星期"+chine[parseInt(items[1])-1]+"第"+items[2]+"-"+(parseInt(items[2])+1)+"节";
+						return str;
+					},
 					editor: { type: 'validatebox' }
 				},
+				
 			]],
 			toolbar:[
 				{//返回
@@ -70,6 +90,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   handler: addData,
 				},'-',
 				{//修改数据
+					   text:"编辑",
+					   iconCls: "icon-edit",
+					   handler: editData,
+				},'-',
+				{//修改数据
 					   text:"保存",
 					   iconCls: "icon-save",
 					   handler: saveData,
@@ -78,11 +103,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   text:"删除",
 					   iconCls: "icon-remove",
 					   handler: removeData,
-				},'-',
-				{//导入数据
-					   text:"导入",
-					   iconCls: "icon-add",
-					   handler: importData,
 				},'-',
 			],
 			onAfterEdit: function(rowIndex,rowData,changes){
@@ -205,10 +225,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			doedit = rowIndex;
 		}
     }
-    //----------------------------导入------------------------------------------
-    function importData(){
-    	$('#searchdialog').dialog('open');
-    }
     //-------------------------------删除-------------------------------------------
     function removeData(){
     	var rows = $('#grid').datagrid('getSelections');
@@ -225,7 +241,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					}	
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>DeleteUserDataServlet",
+			    		url:"<%=basePath%>",
 			    		data:{ids: ids.toString()},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -255,7 +271,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (updated.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>UpdateUserDataServlet",
+			    		url:"<%=basePath%>",
 			    		data:{"rowstr":updatedrow},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -272,7 +288,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (inserted.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>InserUserDataServlet",
+			    		url:"<%=basePath%>",
 			    		data:{"rowstr":insertrow},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -294,7 +310,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	var url = "<%=basePath%>admin/managecourseclass.jsp?courseid="+courseid;
 		location.href=url;
     }
-	//----------------------获取链接数据---------------------
+    //------------------编辑学生名单---------------------
+    function editStudent(){
+    	var row = $('#grid').datagrid('getSelected');
+		if(row){
+			var classid = row.id;
+			var url = "<%=basePath%>admin/manageclassstudent.jsp?classid="+classid+"&courseid="+courseid;
+			location.href=url;
+		}else{
+			$.messager.alert('警告','请选择需要编辑的数据','error');
+		};
+    	
+    }
+    
+  //----------------------获取链接数据---------------------
 	function getUrlParam(name) {
 	    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
 	    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
@@ -345,23 +374,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </style>
 </head>
 <body  class = "h2">
-	<!-- <div id ="topdiv">
-			job名称: 
-			<select title="Basic example" multiple="multiple" name="example-basic" size="5" id="metacode" style="width:300px">
-			</select>
-	  		<a href="javascript:void(0)" id="SelectBtn" class="easyui-linkbutton" style="width:50px;float:right;height:25px;margin-right: 30px">查询</a>
-	</div> -->
 	<table id="grid"></table>
-	
-	<div id="searchdialog" class="easyui-dialog" title="搜索" style="width:400px;height:200px;"
-    data-options="iconCls:'icon-save',resizable:true,modal:true">
-    	<div id="totalplane" style="margin-top: 55px;padding-left: 60px;">
-    		<form id="importform"  action="<%=basePath%>UserImportFileServlet" enctype="multipart/form-data" method="post">
-	  			<input class="easyui-filebox" name="file1" data-options="prompt:'Choose a file...'" style="width:90%">
-	  			<a href="javascript:void(0)" id="SelectBtn" class="easyui-linkbutton" iconCls="icon-ok" style="width:150px;height:32px;margin-top: 10px;margin-left: 65px">确定</a>
-  			</form>
-  		</div>
-	</div>
-	
 </body>
 </html>

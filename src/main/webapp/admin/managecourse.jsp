@@ -55,7 +55,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					editor: { type: 'validatebox' }
 				},
 				{field:'teacherName',title:'教师名',sortable:true,width:200,sortable:true,
-					editor: { type: 'validatebox' }
 				},
 				{field:'operator',title:'操作',sortable:true,width:120,sortable:true,
 					formatter:function(value,row,index){
@@ -163,35 +162,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		queryParams = {};
 		getData(queryParams);
 	});
-    //------------------------------------------------------------------------------
-    
-    function getDistinctMetaCode(){//获取所有的jobname
-    	$.ajax({
-    		type:'post',
-    		url:"<%=basePath%>ConfMetaGetDistinctJobnamesMetacode",
-    		success:function(data){
-    			var list = eval("("+data+")");
-    			var jobname = list.jobname;
-    			if(jobname.length>0){
-    				var str1 = "";
-    				for(var i =0;i<jobname.length;i++){
-    					str1+="<option value='"+jobname[i]+"'>"+jobname[i]+"</option>";
-    				}
-    				$('#metacode').html(str1);
-    			}
-    			$('#metacode').show();
-    			$("#metacode").multiselect({
-    				noneSelectedText: "==请选择==",
-    		        checkAllText: "全选",
-    		        uncheckAllText: '全不选',
-    		        selectedText:'#项被选中',
-    			}).multiselectfilter(); 
-    		},error:function(){
-    			console.log("fail");
-    		}
-    	});
-    }
- 
     //-----------------------编辑------------------------------------------------
     function editData(){//编辑
     	var row = $('#grid').datagrid('getSelected');
@@ -247,11 +217,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					//原来代码开始的位置
 					var ids = [];
 					for(var i = 0; i < rows.length; ++i){
-							ids[i] = rows[i].id;
+						ids[i] = rows[i].id;
 					}	
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>DeleteUserDataServlet",
+			    		url:"<%=basePath%>",
 			    		data:{ids: ids.toString()},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -281,7 +251,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (updated.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>UpdateUserDataServlet",
+			    		url:"<%=basePath%>",
 			    		data:{"rowstr":updatedrow},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -298,7 +268,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (inserted.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>InserUserDataServlet",
+			    		url:"<%=basePath%>",
 			    		data:{"rowstr":insertrow},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -325,10 +295,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     
     $(document).ready(function(){
-    	$('#SelectBtn').click(function(){
-    		//alert("xx");
-    	    $('#importform').submit();
-    	});
+    	
     });
 </script>
 <style type="text/css">

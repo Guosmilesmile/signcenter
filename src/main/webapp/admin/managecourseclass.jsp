@@ -86,7 +86,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				{//修改数据
 					   text:"编辑上课时间",
 					   iconCls: "icon-edit",
-					   handler: editData,
+					   handler: editTime,
 				},'-',
 				{//修改数据
 					   text:"保存",
@@ -176,35 +176,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		queryParams = {};
 		getData(queryParams);
 	});
-    //------------------------------------------------------------------------------
-    
-    function getDistinctMetaCode(){//获取所有的jobname
-    	$.ajax({
-    		type:'post',
-    		url:"<%=basePath%>ConfMetaGetDistinctJobnamesMetacode",
-    		success:function(data){
-    			var list = eval("("+data+")");
-    			var jobname = list.jobname;
-    			if(jobname.length>0){
-    				var str1 = "";
-    				for(var i =0;i<jobname.length;i++){
-    					str1+="<option value='"+jobname[i]+"'>"+jobname[i]+"</option>";
-    				}
-    				$('#metacode').html(str1);
-    			}
-    			$('#metacode').show();
-    			$("#metacode").multiselect({
-    				noneSelectedText: "==请选择==",
-    		        checkAllText: "全选",
-    		        uncheckAllText: '全不选',
-    		        selectedText:'#项被选中',
-    			}).multiselectfilter(); 
-    		},error:function(){
-    			console.log("fail");
-    		}
-    	});
-    }
- 
     //-----------------------编辑------------------------------------------------
     function editData(){//编辑
     	var row = $('#grid').datagrid('getSelected');
@@ -264,7 +235,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					}	
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>DeleteUserDataServlet",
+			    		url:"<%=basePath%>",
 			    		data:{ids: ids.toString()},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -294,7 +265,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (updated.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>UpdateUserDataServlet",
+			    		url:"<%=basePath%>",
 			    		data:{"rowstr":updatedrow},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -311,7 +282,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (inserted.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>InserUserDataServlet",
+			    		url:"<%=basePath%>",
 			    		data:{"rowstr":insertrow},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -345,8 +316,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		};
     	
     }
+    //------------------------编辑上课时间-------------------------------
+    function editTime(){
+    	var row = $('#grid').datagrid('getSelected');
+		if(row){
+			var classid = row.id;
+			var url = "<%=basePath%>admin/manageclasstime.jsp?classid="+classid+"&courseid="+courseid;
+			location.href=url;
+		}else{
+			$.messager.alert('警告','请选择需要编辑的数据','error');
+		};
+    	
+    }
     
-    
+    //-------------------------main----------------------------------
     var courseid = -1;
     $(document).ready(function(){
     	courseid = getUrlParam('courseid');
