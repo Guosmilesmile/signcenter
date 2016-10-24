@@ -140,7 +140,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (updated.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>",
+			    		url:"<%=basePath%>updateSignDataServlet",
 			    		data:{"rowstr":updatedrow,"classid":classid},
 			    		success:function(data){
 			    			if(1==data){//成功
