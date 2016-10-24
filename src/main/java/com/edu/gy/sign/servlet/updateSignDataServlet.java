@@ -50,7 +50,7 @@ public class updateSignDataServlet extends HttpServlet {
 		if(list.size()>0){
 			signEntity = list.get(0);
 		}
-		int updateData = signDao.updateSignData(classid, signEntity.getUserid(), signEntity.getSituation());
+		int updateData = signDao.updateSignData(Integer.parseInt(classid), signEntity.getUserid(), signEntity.getSituation());
 		response.getWriter().write(updateData+"");
 	}
 
