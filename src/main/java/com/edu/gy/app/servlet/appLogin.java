@@ -53,11 +53,11 @@ public class appLogin extends HttpServlet {
 			userEntity = userDao.AuthenUser(userEntity);
 			if(!TextUtils.isEmpty(userEntity.getId()+"")){
 				responseStateVO.setMessage("登陆成功");
-				responseStateVO.setState("success");
+				responseStateVO.setStatus("success");
 			}
 		}else{
 			responseStateVO.setMessage("账号密码不匹配或者不存在");
-			responseStateVO.setState("fail");
+			responseStateVO.setStatus("fail");
 		}
 		response.getWriter().write(FastJsonTool.createJsonString(responseStateVO));
 	}
