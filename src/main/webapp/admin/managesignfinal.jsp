@@ -130,7 +130,49 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	};
 	 //--------------------------保存数据-----------------------------
     function saveData(){
-    	
+    	$.messager.confirm("操作警告", "确定保存后被修改的数据将不可恢复！！", function(data){
+			if(data){
+				$('#grid').datagrid('endEdit', doedit);
+				var inserted = $('#grid').datagrid('getChanges', 'inserted');
+				var updated = $('#grid').datagrid('getChanges', 'updated');
+				var insertrow = JSON.stringify(inserted);
+				var updatedrow = JSON.stringify(updated);
+				if (updated.length > 0) {  
+					$.ajax({
+			    		type:'post',
+			    		url:"<%=basePath%>",
+			    		data:{"rowstr":updatedrow,"classid":classid},
+			    		success:function(data){
+			    			if(1==data){//成功
+			    				$.messager.alert('提示','更新成功','info');
+			    			}else{
+			    				$.messager.alert('提示','更新失败','error');
+			    			}
+			    			$('#grid').datagrid('reload');
+			    		},error:function(){
+			    			console.log("fail");
+			    		}
+			    	});			       
+			    }
+				if (inserted.length > 0) {  
+					$.ajax({
+			    		type:'post',
+			    		url:"<%=basePath%>InserUserDataServlet",
+			    		data:{"rowstr":insertrow},
+			    		success:function(data){
+			    			if(1==data){//成功
+			    				$.messager.alert('提示','添加成功','info');
+			    			}else{
+			    				$.messager.alert('提示','添加失败','error');
+			    			}
+			    			$('#grid').datagrid('reload');
+			    		},error:function(){
+			    			console.log("fail");
+			    		}
+			    	});			       
+			    } 
+			}
+		});
     }
 	function myformatter(value) {//时间转换函数
 		if(value != null && value != ""){
@@ -197,7 +239,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     //----------------------生成二维码-------------------------
     function createQrcode(){
-    	var url = "<%=basePath%>createQRcodeServlet?couseid="+courseid+"&classid="+classid;
+    	var url = "<%=basePath%>createQRcodeServlet?countid="+countid+"&classid="+classid;
 		location.href=url;
     }
     //----------------------获取链接数据---------------------

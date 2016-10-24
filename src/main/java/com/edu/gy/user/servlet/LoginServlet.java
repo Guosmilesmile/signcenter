@@ -52,6 +52,7 @@ public class LoginServlet extends HttpServlet {
 			userEntity = userDao.AuthenUser(userEntity);
 			if(null != userEntity.getId() ){
 				request.getSession().setAttribute("userid", userName);
+				request.getSession().setAttribute("id", userEntity.getId());
 				request.getSession().setAttribute("role", userEntity.getRole()+"");
 				response.sendRedirect("admin/main.jsp");
 			}else{

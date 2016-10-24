@@ -2,6 +2,8 @@ package com.edu.gy.sign.dao;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -94,6 +96,43 @@ public class SignDaoImpl extends BaseDaoImpl<SignEntity> implements ISignDao{
 			}
 		}
 		return total;
+	}
+
+	@Override
+	public Integer updateSignData(Integer classid, Integer userid,Integer situation) {
+		if(null==classid){
+			return 0;
+		}
+		if(null==userid){
+			return 0;
+		}
+		if(null==situation){
+			return 0;
+		}
+		Connection con = null ;
+		PreparedStatement pre =null;
+		int isFinish = 0;
+		try {
+			String sql = "update s_sign set situation=? where userid=? and classid= ?";
+			System.out.println(sql);
+			con = DBUtil.openConnection();
+			pre = con.prepareStatement(sql);
+			pre.setInt(1, situation);
+			pre.setInt(2, userid);
+			pre.setInt(3, classid);
+			pre.execute();
+			isFinish = 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				pre.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return isFinish;
 	}
 
 }

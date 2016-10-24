@@ -28,4 +28,14 @@ public interface ISignDao extends BaseDao<SignEntity>{
 	 * @return
 	 */
 	public Integer getSignVOsCount(Integer classid);
+	
+	
+	/**
+	 * 根据用户id与课程id，修改签到状态
+	 * @param classid
+	 * @param userid
+	 * @param situation
+	 * @return
+	 */
+	public Integer updateSignData(Integer classid,Integer userid,Integer situation);
 }
