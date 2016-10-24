@@ -50,13 +50,15 @@ public class LoginServlet extends HttpServlet {
 		userEntity.setPassWord(passWord);
 		if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(passWord)){
 			userEntity = userDao.AuthenUser(userEntity);
-			if(!TextUtils.isEmpty(userEntity.getId()+"")){
+			if(null != userEntity.getId() ){
 				request.getSession().setAttribute("userid", userName);
 				request.getSession().setAttribute("role", userEntity.getRole()+"");
 				response.sendRedirect("admin/main.jsp");
+			}else{
+				response.sendRedirect("login.jsp");
 			}
 		}else{
-			response.sendRedirect("login.jsp");
+			response.sendRedirect("login.jsp?error=1");
 		}
 		
 	}

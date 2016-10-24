@@ -51,9 +51,12 @@ public class appLogin extends HttpServlet {
 		userEntity.setPassWord(passWord);
 		if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(passWord)){
 			userEntity = userDao.AuthenUser(userEntity);
-			if(!TextUtils.isEmpty(userEntity.getId()+"")){
+			if(null != userEntity.getId()){
 				responseStateVO.setMessage("登陆成功");
 				responseStateVO.setStatus("success");
+			}else{
+				responseStateVO.setMessage("账号密码不匹配或者不存在");
+				responseStateVO.setStatus("fail");
 			}
 		}else{
 			responseStateVO.setMessage("账号密码不匹配或者不存在");
