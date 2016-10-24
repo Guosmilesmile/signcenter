@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
+import com.edu.gy.utils.QRcodeUtils;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -50,10 +51,8 @@ public class createQRcodeServlet extends HttpServlet {
 		String classid = request.getParameter("classid");
 		String countid = request.getParameter("countid");
 		Long timestamp = System.currentTimeMillis();
-		
-		
-		
-		
+		String path = request.getSession().getServletContext().getRealPath("/")+"/upload/";
+		QRcodeUtils.createQRcode(request, response, path, new JSONObject(), timestamp+"");
 	}
 
 }

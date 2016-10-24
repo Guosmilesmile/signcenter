@@ -197,7 +197,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     //----------------------生成二维码-------------------------
     function createQrcode(){
-    	
+    	var url = "<%=basePath%>createQRcodeServlet";
+		location.href=url;
     }
     //----------------------获取链接数据---------------------
 	function getUrlParam(name) {
