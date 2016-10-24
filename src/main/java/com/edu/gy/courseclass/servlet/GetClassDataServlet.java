@@ -44,8 +44,8 @@ public class GetClassDataServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		response.setCharacterEncoding("GBK");
-		response.setContentType("text/html; charset=GBK");
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
 		int pageSize = Integer.parseInt(request.getParameter("rows"));
 		int page = Integer.parseInt(request.getParameter("page"));
 		String temp  = request.getParameter("courseid");

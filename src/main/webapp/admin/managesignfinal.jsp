@@ -92,6 +92,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   iconCls: "icon-edit",
 					   handler: chooseCount,
 				},'-',
+				{//修改数据
+					   text:"生成二维码",
+					   iconCls: "icon-search",
+					   handler: createQrcode,
+				},'-',
 			],
 			onAfterEdit: function(rowIndex,rowData,changes){
 				doedit = undefined;
@@ -190,8 +195,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$.messager.alert('警告','请选择需要编辑的数据','error');
 		};
     }
-    
-  //----------------------获取链接数据---------------------
+    //----------------------生成二维码-------------------------
+    function createQrcode(){
+    	
+    }
+    //----------------------获取链接数据---------------------
 	function getUrlParam(name) {
 	    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
 	    var r = window.location.search.substr(1).match(reg);  //匹配目标参数

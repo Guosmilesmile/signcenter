@@ -1,8 +1,9 @@
-package com.edu.gy.user.servlet;
+package com.edu.gy.sign.servlet;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -11,22 +12,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.edu.gy.entity.UserEntity;
-import com.edu.gy.user.dao.IUserDao;
-import com.edu.gy.user.dao.UserDaoImpl;
-import com.edu.gy.utils.FastJsonTool;
+import com.alibaba.fastjson.JSONObject;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 
 /**
- * Servlet implementation class GetUserDataServlet
+ * Servlet implementation class createQRcodeServlet
  */
-@WebServlet("/GetUserDataServlet")
-public class GetUserDataServlet extends HttpServlet {
+@WebServlet("/createQRcodeServlet")
+public class createQRcodeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private IUserDao userDao = new UserDaoImpl();
+       
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetUserDataServlet() {
+    public createQRcodeServlet() {
         super();
     }
 
@@ -44,14 +47,13 @@ public class GetUserDataServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
-		int pageSize = Integer.parseInt(request.getParameter("rows"));
-		int page = Integer.parseInt(request.getParameter("page"));
-		Map<String, Object> map = new HashMap<String, Object>();
-		List<UserEntity> list = userDao.getUserEntity( (page-1)*pageSize, pageSize);
-		Integer total = userDao.getUserEntityCount();
-		map.put("rows", list);
-		map.put("total", total);
-		response.getWriter().write(FastJsonTool.createJsonString(map));
+		String classid = request.getParameter("classid");
+		String countid = request.getParameter("countid");
+		Long timestamp = System.currentTimeMillis();
+		
+		
+		
+		
 	}
 
 }

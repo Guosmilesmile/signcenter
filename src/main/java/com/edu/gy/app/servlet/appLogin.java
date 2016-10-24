@@ -42,8 +42,8 @@ public class appLogin extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ResponseStateVO responseStateVO = new ResponseStateVO();
 		request.setCharacterEncoding("UTF-8");
-		response.setCharacterEncoding("GBK");
-		response.setContentType("text/html; charset=GBK");
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
 		String userName = request.getParameter("username");
 		String passWord = request.getParameter("password");
 		UserEntity userEntity = new UserEntity();
