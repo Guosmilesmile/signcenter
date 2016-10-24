@@ -1,0 +1,65 @@
+package com.edu.gy.app.servlet;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.edu.gy.app.vo.ResponseStateVO;
+import com.edu.gy.entity.UserEntity;
+import com.edu.gy.user.dao.UserDaoImpl;
+import com.edu.gy.user.dao.IUserDao;
+import com.edu.gy.utils.FastJsonTool;
+import com.edu.gy.utils.TextUtils;
+
+/**
+ * Servlet implementation class appLogin
+ */
+@WebServlet("/appLogin")
+public class appLogin extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    private IUserDao userDao = new UserDaoImpl();  
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public appLogin() {
+        super();
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		this.doPost(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		ResponseStateVO responseStateVO = new ResponseStateVO();
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("GBK");
+		response.setContentType("text/html; charset=GBK");
+		String userName = request.getParameter("username");
+		String passWord = request.getParameter("password");
+		UserEntity userEntity = new UserEntity();
+		userEntity.setUserId(userName);
+		userEntity.setPassWord(passWord);
+		if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(passWord)){
+			userEntity = userDao.AuthenUser(userEntity);
+			if(!TextUtils.isEmpty(userEntity.getId()+"")){
+				responseStateVO.setMessage("登陆成功");
+				responseStateVO.setState("success");
+			}
+		}else{
+			responseStateVO.setMessage("账号密码不匹配或者不存在");
+			responseStateVO.setState("fail");
+		}
+		response.getWriter().write(FastJsonTool.createJsonString(responseStateVO));
+	}
+
+}

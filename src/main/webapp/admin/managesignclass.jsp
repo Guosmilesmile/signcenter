@@ -156,18 +156,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	var url = "<%=basePath%>admin/managesign.jsp";
 		location.href=url;
     }
-    //------------------编辑学生名单---------------------
-    function editStudent(){
-    	var row = $('#grid').datagrid('getSelected');
-		if(row){
-			var classid = row.id;
-			var url = "<%=basePath%>admin/manageclassstudent.jsp?classid="+classid+"&courseid="+courseid;
-			location.href=url;
-		}else{
-			$.messager.alert('警告','请选择需要编辑的数据','error');
-		};
-    	
-    }
+   
     //------------------------查看签到信息-------------------------------
     function showInfo(){
     	var row = $('#grid').datagrid('getSelected');

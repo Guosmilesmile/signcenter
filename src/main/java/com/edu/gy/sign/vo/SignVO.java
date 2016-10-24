@@ -1,10 +1,13 @@
 package com.edu.gy.sign.vo;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 public class SignVO {
 
 	private String userid;
 	private String nickname;
-	private Long signtime;
+	private String signtime;
 	private String situation;
 	public String getUserid() {
 		return userid;
@@ -18,10 +21,10 @@ public class SignVO {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	public Long getSigntime() {
+	public String getSigntime() {
 		return signtime;
 	}
-	public void setSigntime(Long signtime) {
+	public void setSigntime(String signtime) {
 		this.signtime = signtime;
 	}
 	public String getSituation() {
@@ -30,7 +33,7 @@ public class SignVO {
 	public void setSituation(String situation) {
 		this.situation = situation;
 	}
-	public SignVO(String userid, String nickname, Long signtime,
+	public SignVO(String userid, String nickname, String signtime,
 			String situation) {
 		super();
 		this.userid = userid;
@@ -43,6 +46,11 @@ public class SignVO {
 			this.situation = "迟到";
 		}else if("2".equals(situation)){
 			this.situation = "正常签到";
+		}
+		if("0".equals(signtime) || null == signtime){
+			this.signtime = "0";
+		}else{
+			this.signtime = (new Timestamp(Long.parseLong(signtime)*1000)).toString();
 		}
 	}
 	public SignVO() {

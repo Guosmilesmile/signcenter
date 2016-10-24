@@ -14,7 +14,7 @@ public class SignEntity {
 	private Integer userid;
 	private Integer classid;
 	private Long timestamp;
-	private Integer situation;//签到状况0-迟到，1-旷课，2-正常签到
+	private Integer situation;//签到状况0-迟到，1-旷课，2-正常签到,3-跨班上课
 	private Integer index;;//第几次课
 	@ColumnName(columnName="id")
 	public Integer getId() {

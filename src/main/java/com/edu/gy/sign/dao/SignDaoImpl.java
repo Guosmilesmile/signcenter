@@ -45,7 +45,7 @@ public class SignDaoImpl extends BaseDaoImpl<SignEntity> implements ISignDao{
 			while(resultSet.next()){
 				String userid = resultSet.getString(1);
 				String nickname = resultSet.getString(2);
-				Long signtime = resultSet.getLong(3);
+				String signtime = resultSet.getString(3);
 				String situation = resultSet.getInt(4)+"";
 				SignVO item = new SignVO(userid, nickname, signtime, situation);
 				list.add(item);

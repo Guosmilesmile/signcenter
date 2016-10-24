@@ -66,6 +66,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				{field:'signtime',title:'签到时间',sortable:true,width:250,sortable:true,
 				},
 				{field:'situation',title:'签到状态',sortable:true,width:250,sortable:true,
+					editor:{
+                		type : 'combobox',
+                		options : {
+                			valueField: "value", textField: "text"  ,
+                        	data:[{"value": "0", "text": "旷课"},{"value": "1", "text": "迟到"},{"value": "2", "text": "正常签到"},{"value": "3", "text": "跨班上课"}],
+                        	editable:false ,
+                		}
+                    },
 				},
 			]],
 			toolbar:[
@@ -73,6 +81,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   text:"返回",
 					   iconCls: "icon-back",
 					   handler: returnData,
+				},'-',
+				{//修改数据s
+					   text:"保存",
+					   iconCls: "icon-save",
+					   handler: saveData,
 				},'-',
 				{//修改数据
 					   text:"编辑",
@@ -110,7 +123,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
 		$('#searchdialog').dialog('close');
 	};
-	
+	 //--------------------------保存数据-----------------------------
+    function saveData(){
+    	
+    }
 	function myformatter(value) {//时间转换函数
 		if(value != null && value != ""){
 			var date = new Date(value*1000);
