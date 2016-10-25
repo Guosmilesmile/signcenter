@@ -239,7 +239,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     //----------------------生成二维码-------------------------
     function createQrcode(){
-    	var url = "<%=basePath%>createQRcodeServlet?countid="+countid+"&classid="+classid;
+    	var url = "<%=basePath%>createQRcodeServlet?countid="+countid+"&classid="+classid+"&courseid="+courseid;
 		location.href=url;
     }
     //----------------------获取链接数据---------------------

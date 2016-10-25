@@ -20,8 +20,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="<%=basePath%>js/multiselect/jquery.multiselect.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/multiselect/jquery.multiselect.js"></script>
 <script type="text/javascript" src="<%=basePath%>js/multiselect/jquery.multiselect.filter.js"></script>
-
-
 <link rel="stylesheet" type="text/css" href="<%=basePath%>/css/easyUI/themes/bootstrap/easyui.css">
 <link rel="stylesheet" type="text/css" href="<%=basePath%>/css/easyUI/themes/icon.css">
 <script type="text/javascript" src="<%=basePath%>/js/easyUI/jquery.easyui.min.js"></script>
@@ -69,11 +67,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   iconCls: "icon-add",
 					   handler: addData,
 				},'-',
-				{//修改数据
-					   text:"保存",
-					   iconCls: "icon-save",
-					   handler: saveData,
-				},'-',
 				{//删除数据
 					   text:"删除",
 					   iconCls: "icon-remove",
@@ -114,6 +107,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			},
 		});
 		$('#searchdialog').dialog('close');
+		$('#adddialog').dialog('close');
 	};
 	
 	function myformatter(value) {//时间转换函数
@@ -183,27 +177,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     //---------------------------------添加----------------------------------------
     function addData(){
-    	if(doedit != undefined){
-			//$('#grid').datagrid('endEdit',doedit);
-		}
-		if(doedit == undefined){
-			var row = $('#grid').datagrid('getSelected');
-			var rowIndex = $('#grid').datagrid('getRowIndex', row);
-			if(row!=null){
-				rowIndex = $('#grid').datagrid('getRowIndex', row);
-				rowIndex = rowIndex + 1;
-			}
-			else{
-				rowIndex = 0;
-			}
-			$('#grid').datagrid('insertRow',{
-				index: rowIndex,
-				row: {
-				}
-			});
-			$('#grid').datagrid('beginEdit',rowIndex);
-			doedit = rowIndex;
-		}
+    	$('#adddialog').dialog('open');
     }
     //----------------------------导入------------------------------------------
     function importData(){
@@ -225,7 +199,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					}	
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>DeleteUserDataServlet",
+			    		url:"<%=basePath%>removeClassStudentServlet",
 			    		data:{ids: ids.toString()},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -243,52 +217,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 		}
     }
-    //-------------------------------保存-------------------------------------------
-	function saveData(){//保存
-		$.messager.confirm("操作警告", "确定保存后被修改的数据将不可恢复！！", function(data){
-			if(data){
-				$('#grid').datagrid('endEdit', doedit);
-				var inserted = $('#grid').datagrid('getChanges', 'inserted');
-				var updated = $('#grid').datagrid('getChanges', 'updated');
-				var insertrow = JSON.stringify(inserted);
-				var updatedrow = JSON.stringify(updated);
-				if (updated.length > 0) {  
-					$.ajax({
-			    		type:'post',
-			    		url:"<%=basePath%>UpdateUserDataServlet",
-			    		data:{"rowstr":updatedrow},
-			    		success:function(data){
-			    			if(1==data){//成功
-			    				$.messager.alert('提示','更新成功','info');
-			    			}else{
-			    				$.messager.alert('提示','更新失败','error');
-			    			}
-			    			$('#grid').datagrid('reload');
-			    		},error:function(){
-			    			console.log("fail");
-			    		}
-			    	});			       
-			    }
-				if (inserted.length > 0) {  
-					$.ajax({
-			    		type:'post',
-			    		url:"<%=basePath%>InserUserDataServlet",
-			    		data:{"rowstr":insertrow},
-			    		success:function(data){
-			    			if(1==data){//成功
-			    				$.messager.alert('提示','添加成功','info');
-			    			}else{
-			    				$.messager.alert('提示','添加失败','error');
-			    			}
-			    			$('#grid').datagrid('reload');
-			    		},error:function(){
-			    			console.log("fail");
-			    		}
-			    	});			       
-			    } 
-			}
-		});
-    }
 	//------------------返回---------------------
     function  returnData(){
     	var url = "<%=basePath%>admin/managecourseclass.jsp?courseid="+courseid;
@@ -300,9 +228,39 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
 	    if (r != null) return unescape(r[2]); return null; //返回参数值
 	}; 
+	//------------------------获取学生名单-------------------
+	function getStudentlist(){//获取所有的metaCode
+    	$.ajax({
+    		type:'post',
+    		async:false,
+    		url:"<%=basePath%>GetStudentListServlet",
+    		success:function(data){
+    			var list = eval("("+data+")");
+    			if(list.length>0){
+    				var str1 = "";
+    				for(var i =0;i<list.length;i++){
+    					str1+="<option value='"+list[i].id+"'>"+list[i].userId+"</option>";
+    				}
+    				$('#studentlist').html(str1);
+    			}
+    			$('#studentlist').show();
+    			$("#studentlist").multiselect({
+    				noneSelectedText: "==请选择==",
+    				multiple: false,
+    		        checkAllText: "全选",
+    		        uncheckAllText: '全不选',
+    		        selectedText:'#项被选中',
+    			}).multiselectfilter(); 
+    		},error:function(){
+    			console.log("fail");
+    		}
+    	})
+    }
+	//----------------------------主体----------------------------------
 	var courseid = -1;
 	var classid = -1;
     $(document).ready(function(){
+    	getStudentlist();
     	courseid = getUrlParam('courseid');
     	classid = getUrlParam('classid');
     	if(null==courseid){
@@ -318,6 +276,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         		getData(queryParams);
         	}
     	}
+    	$('#addClick').click(function(){
+    		var studentid = $("#studentlist").val();
+    		if(null==studentid){
+    			$.messager.alert('提示','选择添加的学生','error');
+    		}else{
+    			$.ajax({
+    	    		type:'post',
+    	    		url:"<%=basePath%>AddStudentToClassServlet",
+    	    		data:{'userid':studentid[0],'classid':classid},
+    	    		success:function(data){
+    	    			if(1==data){//成功
+		    				$.messager.alert('提示','添加成功','info');
+		    			}else{
+		    				$.messager.alert('提示','添加失败','error');
+		    			}
+		    			$('#grid').datagrid('reload');
+		    			$('#adddialog').dialog('close');
+    	    		},error:function(){
+    	    			console.log("fail");
+    	    		}
+    	    	});
+    		}
+    		
+    	});
     });
 </script>
 <style type="text/css">
@@ -360,6 +342,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  			<input class="easyui-filebox" name="file1" data-options="prompt:'Choose a file...'" style="width:90%">
 	  			<a href="javascript:void(0)" id="SelectBtn" class="easyui-linkbutton" iconCls="icon-ok" style="width:150px;height:32px;margin-top: 10px;margin-left: 65px">确定</a>
   			</form>
+  		</div>
+	</div>
+	
+	<div id="adddialog" class="easyui-dialog" title="添加" style="width:400px;height:200px;"
+    data-options="iconCls:'icon-save',resizable:true,modal:true">
+    	<div id="totalplane" style="margin-top: 55px;padding-left: 60px;">
+    		<select  multiple="multiple" name="example-basic" size="5" id="studentlist" style="width:250px;display: none;">
+			</select>
+    		<a href="javascript:void(0)" id="addClick" class="easyui-linkbutton" iconCls="icon-ok" style="width:150px;height:32px;margin-top: 10px;margin-left: 65px">确定</a>
   		</div>
 	</div>
 	

@@ -16,6 +16,14 @@ public interface IUserDao extends BaseDao<UserEntity>{
 	public List<UserEntity> getUserEntity(int start,int pagesize);
 	
 	/**
+	 * 分页获取用户
+	 * @param start
+	 * @param pagesize
+	 * @return
+	 */
+	public List<UserEntity> getUserEntity();
+	
+	/**
 	 * 分页获取用户数量
 	 * @param start
 	 * @param pagesize
@@ -29,4 +37,11 @@ public interface IUserDao extends BaseDao<UserEntity>{
 	 * @return
 	 */
 	public UserEntity AuthenUser(UserEntity userEntity);
+	
+	/**
+	 * 通过userid获取对应的用户
+	 * @param userid
+	 * @return
+	 */
+	public UserEntity getUserByUserid(String userid);
 }

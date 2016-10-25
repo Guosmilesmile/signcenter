@@ -147,4 +147,105 @@ public class UserDaoImpl extends BaseDaoImpl<UserEntity> implements IUserDao{
 		return userEntity;
 	}
 
+
+	@Override
+	public UserEntity getUserByUserid(String userid) {
+		UserEntity userEntity = new UserEntity();
+		Class clz = UserEntity.class;
+		TableName anotation = (TableName) clz.getAnnotation(TableName.class);
+		String tableName = anotation.tablename();
+		Method[] methods = clz.getMethods();
+		Connection con = null;
+		PreparedStatement pre = null;
+		ResultSet resultSet = null;
+		try {
+			con = DBUtil.openConnection();
+			String sql = "select * from "+tableName+" where userid = ?";
+			System.out.println(sql);
+			pre = con.prepareStatement(sql);
+			pre.setString(1, userid);
+			resultSet = pre.executeQuery();
+			while(resultSet.next()){
+				for(Method method : methods){
+					if(method.isAnnotationPresent(ColumnName.class)){
+						ColumnName columnName = method.getAnnotation(ColumnName.class);
+						String str = resultSet.getString(columnName.columnName());//以string的形式获取数据
+						if(null==str){
+							str = "";
+						}
+						String getName= method.getName();
+						String setName = "set"+getName.substring(3,getName.length());
+						Method setMethod = clz.getDeclaredMethod(setName,method.getReturnType());
+						Constructor cons = method.getReturnType().getConstructor(String.class);//构造类似 xxx(String)的构造函数 ,xx由get的返回类型决定
+						Object setObject = cons.newInstance(str);
+						setMethod.invoke(userEntity,setObject);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				resultSet.close();
+				pre.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return userEntity;
+	}
+
+
+	@Override
+	public List<UserEntity> getUserEntity() {
+		List<UserEntity> list = new ArrayList<>();
+		Class clz = UserEntity.class;
+		TableName anotation = (TableName) clz.getAnnotation(TableName.class);
+		String tableName = anotation.tablename();
+		Method[] methods = clz.getMethods();
+		Connection con = null;
+		PreparedStatement pre = null;
+		ResultSet resultSet = null;
+		try {
+			con = DBUtil.openConnection();
+			String sql = "select * from "+tableName+" where";
+			sql+=" 1=1 ";
+			System.out.println(sql);
+			pre = con.prepareStatement(sql);
+			resultSet = pre.executeQuery();
+			while(resultSet.next()){
+				UserEntity userEntity = new UserEntity();
+				for(Method method : methods){
+					if(method.isAnnotationPresent(ColumnName.class)){
+						ColumnName columnName = method.getAnnotation(ColumnName.class);
+						String str = resultSet.getString(columnName.columnName());//以string的形式获取数据
+						if(null==str){
+							str = "";
+						}
+						String getName= method.getName();
+						String setName = "set"+getName.substring(3,getName.length());
+						Method setMethod = clz.getDeclaredMethod(setName,method.getReturnType());
+						Constructor cons = method.getReturnType().getConstructor(String.class);//构造类似 xxx(String)的构造函数 ,xx由get的返回类型决定
+						Object setObject = cons.newInstance(str);
+						setMethod.invoke(userEntity,setObject);
+					}
+				}
+				userEntity.setPassWord("");
+				list.add(userEntity);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				resultSet.close();
+				pre.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+
 }

@@ -10,7 +10,7 @@ import com.edu.gy.entity.ClassStudentEntity;
  * @author Christy
  *
  */
-public interface IClassStudentDao extends BaseDao<ClassStudentVO>{
+public interface IClassStudentDao extends BaseDao<ClassStudentEntity>{
 
 	/**
 	 * 根据班级id获取学生名单
@@ -25,4 +25,13 @@ public interface IClassStudentDao extends BaseDao<ClassStudentVO>{
 	 * @return
 	 */
 	public Integer getClassStudentEntitiesCount(Integer classid);
+	
+	/**
+	 * 获取学生应该上课的对应班级。
+	 * @param courseid 课程id
+	 * @param userid 用户id
+	 * @param classid 班级id
+	 * @return
+	 */
+	public Integer getClassidWithClassidandUserid(Integer courseid,Integer userid,Integer classid);
 }

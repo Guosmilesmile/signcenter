@@ -46,5 +46,10 @@ public interface IClassTimeDao extends BaseDao<ClassTimeEntity>{
 	 */
 	public List<ClassTimeCountEntity> getClassTimeCount(Integer ctid);
 
-	
+	/**
+	 * 通过classid获取对应的信息
+	 * @param classid
+	 * @return
+	 */
+	public ClassTimeEntity getClassTimeEntityByClassid(Integer classid);
 }

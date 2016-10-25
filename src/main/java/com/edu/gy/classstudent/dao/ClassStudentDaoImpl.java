@@ -18,7 +18,7 @@ import com.edu.gy.entity.ClassStudentEntity;
 import com.edu.gy.entity.CourseClassEntity;
 import com.edu.gy.utils.DBUtil;
 
-public class ClassStudentDaoImpl extends BaseDaoImpl<ClassStudentVO> implements IClassStudentDao{
+public class ClassStudentDaoImpl extends BaseDaoImpl<ClassStudentEntity> implements IClassStudentDao{
 
 	@Override
 	public List<ClassStudentVO> getClassStudentEntities(int start,int pagesize, Integer classid) {
@@ -72,6 +72,40 @@ public class ClassStudentDaoImpl extends BaseDaoImpl<ClassStudentVO> implements 
 			sql += " and  1=1 ";
 			System.out.println(sql);
 			pre = con.prepareStatement(sql);
+			resultSet = pre.executeQuery();
+			while(resultSet.next()){
+				total = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				resultSet.close();
+				pre.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return total;
+	}
+
+	@Override
+	public Integer getClassidWithClassidandUserid(Integer courseid,
+			Integer userid, Integer classid) {
+		Integer total = 0;
+		Connection con = null;
+		PreparedStatement pre = null;
+		ResultSet resultSet = null;
+		try {
+			con = DBUtil.openConnection();
+			String sql = "select classid from cs_classstudent where userid = ? and classid in "
+						+"(select id from cc_courseclass where courseid = ? and id != ?)";
+			System.out.println(sql);
+			pre = con.prepareStatement(sql);
+			pre.setInt(1, userid);
+			pre.setInt(2, courseid);
+			pre.setInt(3, classid);
 			resultSet = pre.executeQuery();
 			while(resultSet.next()){
 				total = resultSet.getInt(1);

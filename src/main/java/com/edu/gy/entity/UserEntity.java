@@ -1,5 +1,7 @@
 package com.edu.gy.entity;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.edu.gy.annotation.ColumnName;
 import com.edu.gy.annotation.TableName;
 
@@ -36,6 +38,7 @@ public class UserEntity {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
 	@ColumnName(columnName="userid")
 	public String getUserId() {
 		return userId;

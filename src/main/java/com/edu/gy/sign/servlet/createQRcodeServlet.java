@@ -50,11 +50,13 @@ public class createQRcodeServlet extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		String classid = request.getParameter("classid");
 		String countid = request.getParameter("countid");
+		String courseid = request.getParameter("courseid");
 		Long timestamp = System.currentTimeMillis();
 		JSONObject json = new JSONObject();
 		json.put("classid", classid);
 		json.put("countid", countid);
 		json.put("time", timestamp);
+		json.put("courseid", courseid);
 		String path = request.getSession().getServletContext().getRealPath("/")+"/upload/";
 		QRcodeUtils.createQRcode(request, response, path, json, timestamp+"");
 	}
