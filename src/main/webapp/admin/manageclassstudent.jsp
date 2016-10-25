@@ -181,6 +181,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     }
     //----------------------------导入------------------------------------------
     function importData(){
+    	$('#formclassid').val(classid);
+    	$('#formcourseid').val(courseid);
     	$('#searchdialog').dialog('open');
     }
     //-------------------------------删除-------------------------------------------
@@ -259,8 +261,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	//----------------------------主体----------------------------------
 	var courseid = -1;
 	var classid = -1;
+	var mess = -1;
     $(document).ready(function(){
+    	$('#SelectBtn').click(function(){
+    	    $('#importform').submit();
+    	});
     	getStudentlist();
+    	mess = getUrlParam('mess');
+    	if(mess==1){
+    		$.messager.alert('提示','导入成功','info');
+    	}else if(mess==2){
+    		$.messager.alert('提示','导入失败','error');
+    	}
     	courseid = getUrlParam('courseid');
     	classid = getUrlParam('classid');
     	if(null==courseid){
@@ -338,7 +350,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="searchdialog" class="easyui-dialog" title="搜索" style="width:400px;height:200px;"
     data-options="iconCls:'icon-save',resizable:true,modal:true">
     	<div id="totalplane" style="margin-top: 55px;padding-left: 60px;">
-    		<form id="importform"  action="<%=basePath%>UserImportFileServlet" enctype="multipart/form-data" method="post">
+    		<form id="importform"  action="<%=basePath%>importClassStudentServlet" enctype="multipart/form-data" method="post">
+	  			<input  name="classid" id ="formclassid"  style="display: none;">
+	  			<input  name="courseid" id ="formcourseid"  style="display: none;">
 	  			<input class="easyui-filebox" name="file1" data-options="prompt:'Choose a file...'" style="width:90%">
 	  			<a href="javascript:void(0)" id="SelectBtn" class="easyui-linkbutton" iconCls="icon-ok" style="width:150px;height:32px;margin-top: 10px;margin-left: 65px">确定</a>
   			</form>

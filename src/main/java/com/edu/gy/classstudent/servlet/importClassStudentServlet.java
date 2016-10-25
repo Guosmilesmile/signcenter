@@ -1,10 +1,9 @@
-package com.edu.gy.user.servlet;
+package com.edu.gy.classstudent.servlet;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -22,41 +21,43 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.edu.gy.classstudent.dao.ClassStudentDaoImpl;
+import com.edu.gy.classstudent.dao.IClassStudentDao;
 import com.edu.gy.entity.ClassStudentEntity;
+import com.edu.gy.entity.UserEntity;
+import com.edu.gy.user.dao.IUserDao;
+import com.edu.gy.user.dao.UserDaoImpl;
 
 /**
- * Servlet implementation class UserImportFileServlet
+ * Servlet implementation class importClassStudentServlet
  */
-@WebServlet("/UserImportFileServlet")
-public class UserImportFileServlet extends HttpServlet {
+@WebServlet("/importClassStudentServlet")
+public class importClassStudentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+    private IUserDao userDao = new UserDaoImpl();
+    private IClassStudentDao classStudentDao = new ClassStudentDaoImpl();
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public importClassStudentServlet() {
+        super();
+    }
 
 	/**
-	 * @see HttpServlet#HttpServlet()
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	public UserImportFileServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		this.doPost(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String rootPath = this.getServletContext().getRealPath("/");
+		String classid =  request.getParameter("classid");
+		String courseid =  request.getParameter("courseid");
 		List<ClassStudentEntity> list = new ArrayList<ClassStudentEntity>();
-		
 		System.out.println(rootPath);
 		rootPath += "/upload";
 		File file = new File(rootPath);
@@ -72,7 +73,11 @@ public class UserImportFileServlet extends HttpServlet {
 				List<FileItem> items = upload.parseRequest(request);
 				for (FileItem item : items) {
 					if (item.isFormField()) {// 如果是普通表单项目，显示表单内容。
-
+						if("classid".equals(item.getFieldName())){
+							classid = item.getString();
+						}else if("courseid".equals(item.getFieldName())){
+							courseid = item.getString();
+						}
 					} else {// 如果是上传文件，显示文件名。
 						String name = item.getName();
 						String suffx = name.substring(
@@ -88,21 +93,37 @@ public class UserImportFileServlet extends HttpServlet {
 							Sheet rs = rwb.getSheet(i);
 							for (int j = 0; j < rs.getRows(); j++) {
 								Cell[] cells = rs.getRow(j);
-								for (int k = 0; k < cells.length; k++)
+								for (int k = 0; k < cells.length; k++){
 									sb.append(cells[k].getContents());
+									UserEntity temp = userDao.getUserByUserid(cells[k].getContents());
+									if(null == temp.getId()){
+										throw new Exception();
+									}
+									list.add(new ClassStudentEntity(null,Integer.parseInt(classid),temp.getId()));
+								}
 							}
 						}
+						for(ClassStudentEntity t : list)
+							classStudentDao.insertData(t);
 						fis.close();
 						System.out.println(sb.toString());
 					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				String url  = "admin/manageclassstudent.jsp?classid="+classid+"&courseid="+courseid+"&mess=2";
+				System.out.println(url);
+				//request.getRequestDispatcher(url).forward(request,response);
+				response.sendRedirect(url);
+				return ;
 			}
-
 		} else {
 
 		}
+		String url  = "admin/manageclassstudent.jsp?classid="+classid+"&courseid="+courseid+"&mess=1";
+		System.out.println(url);
+		response.sendRedirect(url);
+		//request.getRequestDispatcher(url).forward(request,response);
 	}
 
 }
