@@ -221,7 +221,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					}	
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>",
+			    		url:"<%=basePath%>DeleteCourseDataServlet",
 			    		data:{ids: ids.toString()},
 			    		success:function(data){
 			    			if(1==data){//成功
