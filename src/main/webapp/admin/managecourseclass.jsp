@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%
 String path = request.getContextPath();
@@ -235,7 +236,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					}	
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>",
+			    		url:"<%=basePath%>DeleteCourseDataServlet",
 			    		data:{ids: ids.toString()},
 			    		success:function(data){
 			    			if(1==data){//成功
