@@ -102,11 +102,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   iconCls: "icon-remove",
 					   handler: removeData,
 				},'-',
-				{//导入数据
-					   text:"导入",
-					   iconCls: "icon-add",
-					   handler: importData,
-				},'-',
 			],
 			onAfterEdit: function(rowIndex,rowData,changes){
 				doedit = undefined;
@@ -342,10 +337,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
     }
     $(document).ready(function(){
-    	$('#SelectBtn').click(function(){
+    	/* $('#SelectBtn').click(function(){
     		//alert("xx");
     	    $('#importform').submit();
-    	});
+    	}); */
     });
 </script>
 <style type="text/css">
@@ -381,7 +376,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</div> -->
 	<table id="grid"></table>
 	
-	<div id="searchdialog" class="easyui-dialog" title="搜索" style="width:400px;height:200px;"
+	<%-- <div id="searchdialog" class="easyui-dialog" title="搜索" style="width:400px;height:200px;"
     data-options="iconCls:'icon-save',resizable:true,modal:true">
     	<div id="totalplane" style="margin-top: 55px;padding-left: 60px;">
     		<form id="importform"  action="<%=basePath%>UserImportFileServlet" enctype="multipart/form-data" method="post">
@@ -389,7 +384,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  			<a href="javascript:void(0)" id="SelectBtn" class="easyui-linkbutton" iconCls="icon-ok" style="width:150px;height:32px;margin-top: 10px;margin-left: 65px">确定</a>
   			</form>
   		</div>
-	</div>
+	</div> --%>
 	
 </body>
 </html>

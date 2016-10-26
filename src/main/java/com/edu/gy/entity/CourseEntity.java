@@ -1,12 +1,14 @@
 package com.edu.gy.entity;
 
 import com.edu.gy.annotation.ColumnName;
+import com.edu.gy.annotation.TableName;
 
 /**
  * 课程实体
  * @author Christy
  *
  */
+@TableName(tablename="c_course")
 public class CourseEntity {
 
 	private Integer id;
