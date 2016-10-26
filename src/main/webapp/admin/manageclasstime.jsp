@@ -64,6 +64,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				},
 				{field:'classtime',title:'上课时间',sortable:true,width:200,sortable:true,
 					formatter:function(value,row,index){
+						if(value=="")
+							return "";
+						if(value==undefined)
+							return "";
 						var items = value.split("_");
 						var str = "";
 						if(items[0]=="1"){
@@ -274,7 +278,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (updated.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>",
+			    		url:"<%=basePath%>UpdateClassTimeServlet",
 			    		data:{"rowstr":updatedrow},
 			    		success:function(data){
 			    			if(1==data){//成功
@@ -291,8 +295,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (inserted.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>",
-			    		data:{"rowstr":insertrow},
+			    		url:"<%=basePath%>InsertClassTimeServlet",
+			    		data:{"rowstr":insertrow,'classid':classid},
 			    		success:function(data){
 			    			if(1==data){//成功
 			    				$.messager.alert('提示','添加成功','info');

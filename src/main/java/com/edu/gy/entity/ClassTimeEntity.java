@@ -49,7 +49,7 @@ public class ClassTimeEntity {
 	public void setClasstime(String classtime) {
 		this.classtime = classtime;
 	}
-	@ColumnName(columnName="index")
+	@ColumnName(columnName="indexs")
 	public Integer getIndex() {
 		return index;
 	}

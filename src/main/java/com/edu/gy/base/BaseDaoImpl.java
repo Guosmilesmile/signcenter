@@ -132,6 +132,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		TableName annotation = (TableName) clz.getAnnotation(TableName.class);
 		String tablename = annotation.tablename();
 		String sql = "delete from "+tablename+" where id=?";
+		System.out.println(sql);
 		try {
 			con =DBUtil.openConnection();
 			for(int i=0;i<ids.length;i++){
