@@ -93,7 +93,7 @@ public class ClassStudentDaoImpl extends BaseDaoImpl<ClassStudentEntity> impleme
 	@Override
 	public Integer getClassidWithClassidandUserid(Integer courseid,
 			Integer userid, Integer classid) {
-		Integer total = 0;
+		String total = "";
 		Connection con = null;
 		PreparedStatement pre = null;
 		ResultSet resultSet = null;
@@ -108,7 +108,7 @@ public class ClassStudentDaoImpl extends BaseDaoImpl<ClassStudentEntity> impleme
 			pre.setInt(3, classid);
 			resultSet = pre.executeQuery();
 			while(resultSet.next()){
-				total = resultSet.getInt(1);
+				total = resultSet.getString(1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,7 +121,9 @@ public class ClassStudentDaoImpl extends BaseDaoImpl<ClassStudentEntity> impleme
 				e.printStackTrace();
 			}
 		}
-		return total;
+		if("".equals(total))
+			total = classid+"";
+		return Integer.parseInt(total);
 	}
 
 }

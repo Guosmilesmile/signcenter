@@ -34,7 +34,7 @@ public interface BaseDao<T>{
 	 * @param T 查询条件，模糊查询
 	 * 
 	 */
-	public Map<String, Object> getDataEntities(T t);
+	public Map<String, List<Object>> getDataEntities(T t);
 	
 	/**
 	 * 

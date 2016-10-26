@@ -54,10 +54,10 @@ public class appSign extends HttpServlet {
 				Integer.parseInt(courseid), Long.parseLong(createTimeParam), Long.parseLong(signTimeParam));
 		ResponseStateVO responseStateVO = new ResponseStateVO();
 		if(addSign==0){
-			responseStateVO.setMessage("账号密码不匹配或者不存在");
+			responseStateVO.setMessage("签到失败");
 			responseStateVO.setStatus("fail");
 		}else{
-			responseStateVO.setMessage("登陆成功");
+			responseStateVO.setMessage("签到成功");
 			responseStateVO.setStatus("success");
 		}
 		response.getWriter().write(FastJsonTool.createJsonString(responseStateVO));

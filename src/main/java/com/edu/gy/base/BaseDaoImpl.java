@@ -157,9 +157,9 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	}
 
 	@Override
-	public Map<String, Object> getDataEntities(T t) {
-		Map<String, Object> map = new  HashMap<String, Object>();
-		List<T> list = new ArrayList<T>();
+	public Map<String, List<Object>> getDataEntities(T t) {
+		Map<String, List<Object>> map = new  HashMap<String, List<Object>>();
+		List<Object> list = new ArrayList<Object>();
 		Connection con = null ;
 		PreparedStatement pre = null;
 		ResultSet resultSet = null;

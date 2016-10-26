@@ -46,6 +46,8 @@ public class SignVO {
 			this.situation = "迟到";
 		}else if("2".equals(situation)){
 			this.situation = "正常签到";
+		}else if("3".equals(situation)){
+			this.situation = "跨班上课";
 		}
 		if("0".equals(signtime) || null == signtime){
 			this.signtime = "0";

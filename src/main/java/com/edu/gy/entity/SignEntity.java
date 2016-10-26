@@ -66,7 +66,7 @@ public class SignEntity {
 	public SignEntity() {
 		super();
 	}
-	@ColumnName(columnName="index")
+	@ColumnName(columnName="indexs")
 	public Integer getIndex() {
 		return index;
 	}

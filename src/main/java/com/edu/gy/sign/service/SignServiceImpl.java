@@ -31,7 +31,9 @@ public class SignServiceImpl implements ISignService{
 		//判断situtation。是否跨班和是否迟到   通过获取的classid获取相应的所有班级，找出该生对应的班级id，
 		Integer finalclassid = classStudentDao.getClassidWithClassidandUserid(courseid, userid, classid);
 		if(finalclassid == classid){
-			situation = 4;
+			situation = 2;
+		}else{
+			situation = 3;
 		}
 		SignEntity signEntity = new SignEntity(null, userid, finalclassid, signTime, situation, countid);
 		int insertData = signDao.insertData(signEntity);

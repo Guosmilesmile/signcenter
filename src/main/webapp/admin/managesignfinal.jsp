@@ -88,14 +88,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					   handler: saveData,
 				},'-',
 				{//修改数据
-					   text:"编辑",
-					   iconCls: "icon-edit",
-					   handler: chooseCount,
-				},'-',
-				{//修改数据
 					   text:"生成二维码",
 					   iconCls: "icon-search",
 					   handler: createQrcode,
+				},'-',
+				{//修改数据
+					   text:"可视化",
+					   iconCls: "icon-ok",
+					   handler: ceateChart,
 				},'-',
 			],
 			onAfterEdit: function(rowIndex,rowData,changes){
@@ -108,6 +108,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$('#grid').datagrid('selectRow',rowIndex);
 		        	$('#grid').datagrid('beginEdit',rowIndex);
 		        	doedit=rowIndex;
+		        	var row = $('#grid').datagrid('getSelected');
+		        	beforesituation = row.situation;
 				}
 			},
 			onLoadSuccess:function(data){//数据刷新的时候，编辑的坐标设为空
@@ -141,7 +143,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$.ajax({
 			    		type:'post',
 			    		url:"<%=basePath%>updateSignDataServlet",
-			    		data:{"rowstr":updatedrow,"classid":classid},
+			    		data:{"rowstr":updatedrow,"classid":classid,'countid':countid,'beforesituation':beforesituation},
 			    		success:function(data){
 			    			if(1==data){//成功
 			    				$.messager.alert('提示','更新成功','info');
@@ -226,21 +228,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	var url = "<%=basePath%>admin/managesignclasscount.jsp?ctid="+ctid+"&courseid="+courseid+"&classid="+classid;
 		location.href=url;
     }
-    //------------------选择课时---------------------
-    function chooseCount(){
-    	var row = $('#grid').datagrid('getSelected');
-		if(row){
-			var countid = row.id;
-			var url = "<%=basePath%>admin/manageclassstudent.jsp?classid="+classid+"&courseid="+courseid+"&ctid="+ctid+"&countid="+countid;
-			location.href=url;
-		}else{
-			$.messager.alert('警告','请选择需要编辑的数据','error');
-		};
-    }
     //----------------------生成二维码-------------------------
     function createQrcode(){
     	var url = "<%=basePath%>createQRcodeServlet?countid="+countid+"&classid="+classid+"&courseid="+courseid;
 		location.href=url;
+    }
+    //------------------------可视化---------------------
+    function ceateChart(){
+    	window.open("<%=basePath%>admin/signchart.jsp?classid="+classid+"&countid="+countid);
     }
     //----------------------获取链接数据---------------------
 	function getUrlParam(name) {
@@ -252,6 +247,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	var classid = -1;
 	var ctid = -1;
 	var countid = -1;
+	var beforesituation = -1;
     $(document).ready(function(){
     	courseid = getUrlParam('courseid');
     	classid = getUrlParam('classid');

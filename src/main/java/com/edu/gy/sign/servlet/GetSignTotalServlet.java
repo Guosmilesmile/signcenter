@@ -1,10 +1,6 @@
 package com.edu.gy.sign.servlet;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,25 +8,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.fastjson.JSONObject;
-import com.edu.gy.utils.QRcodeUtils;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
+import com.edu.gy.sign.dao.ISignDao;
+import com.edu.gy.sign.dao.SignDaoImpl;
+import com.edu.gy.sign.vo.SignChartVO;
+import com.edu.gy.utils.FastJsonTool;
 
 /**
- * Servlet implementation class createQRcodeServlet
+ * Servlet implementation class GetSignTotalServlet
  */
-@WebServlet("/createQRcodeServlet")
-public class createQRcodeServlet extends HttpServlet {
+@WebServlet("/GetSignTotalServlet")
+public class GetSignTotalServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+    private ISignDao signDao = new SignDaoImpl();  
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public createQRcodeServlet() {
+    public GetSignTotalServlet() {
         super();
     }
 
@@ -50,15 +43,8 @@ public class createQRcodeServlet extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		String classid = request.getParameter("classid");
 		String countid = request.getParameter("countid");
-		String courseid = request.getParameter("courseid");
-		Long timestamp = System.currentTimeMillis()/1000;
-		JSONObject json = new JSONObject();
-		json.put("classid", classid);
-		json.put("countid", countid);
-		json.put("time", timestamp);
-		json.put("courseid", courseid);
-		String path = request.getSession().getServletContext().getRealPath("/")+"/upload/";
-		QRcodeUtils.createQRcode(request, response, path, json, timestamp+"");
+		SignChartVO chartVO = signDao.getChartVO(Integer.parseInt(classid), Integer.parseInt(countid));
+		response.getWriter().write(FastJsonTool.createJsonString(chartVO));
 	}
 
 }
