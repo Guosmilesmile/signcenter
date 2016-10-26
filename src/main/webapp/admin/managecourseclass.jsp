@@ -282,8 +282,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if (inserted.length > 0) {  
 					$.ajax({
 			    		type:'post',
-			    		url:"<%=basePath%>",
-			    		data:{"rowstr":insertrow},
+			    		url:"<%=basePath%>InserClassDataServlet",
+			    		data:{"rowstr":insertrow,"courseid":courseid},
 			    		success:function(data){
 			    			if(1==data){//成功
 			    				$.messager.alert('提示','添加成功','info');
