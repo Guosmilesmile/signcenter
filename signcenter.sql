@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50151
 File Encoding         : 65001
 
-Date: 2016-10-24 11:00:10
+Date: 2016-10-27 15:01:10
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -26,13 +26,13 @@ CREATE TABLE `cc_courseclass` (
   PRIMARY KEY (`id`),
   KEY `CC_COURSECLASS` (`courseid`),
   CONSTRAINT `CC_COURSECLASS` FOREIGN KEY (`courseid`) REFERENCES `c_course` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of cc_courseclass
 -- ----------------------------
-INSERT INTO `cc_courseclass` VALUES ('1', '1', '卓越班');
-INSERT INTO `cc_courseclass` VALUES ('2', '1', '普通班');
+INSERT INTO `cc_courseclass` VALUES ('6', '4', '不猝死一班？');
+INSERT INTO `cc_courseclass` VALUES ('7', '4', '不猝死二班');
 
 -- ----------------------------
 -- Table structure for cs_classstudent
@@ -43,19 +43,18 @@ CREATE TABLE `cs_classstudent` (
   `classid` int(11) DEFAULT NULL,
   `userid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `CC_CLASS` (`classid`),
+  UNIQUE KEY `CU_UNIQUE` (`classid`,`userid`),
   KEY `CU_CLASSSTUENDT` (`userid`),
   CONSTRAINT `CC_CLASS` FOREIGN KEY (`classid`) REFERENCES `cc_courseclass` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `CU_CLASSSTUENDT` FOREIGN KEY (`userid`) REFERENCES `u_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of cs_classstudent
 -- ----------------------------
-INSERT INTO `cs_classstudent` VALUES ('1', '1', '1');
-INSERT INTO `cs_classstudent` VALUES ('2', '1', '2');
-INSERT INTO `cs_classstudent` VALUES ('3', '2', '3');
-INSERT INTO `cs_classstudent` VALUES ('4', '1', '3');
+INSERT INTO `cs_classstudent` VALUES ('14', '6', '7');
+INSERT INTO `cs_classstudent` VALUES ('16', '6', '9');
+INSERT INTO `cs_classstudent` VALUES ('15', '7', '8');
 
 -- ----------------------------
 -- Table structure for ct_classtime
@@ -65,19 +64,19 @@ CREATE TABLE `ct_classtime` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `classid` int(11) DEFAULT NULL,
   `classtime` varchar(50) DEFAULT NULL,
-  `index` int(2) DEFAULT NULL,
+  `indexs` int(2) DEFAULT NULL,
   `count` int(5) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `CC_CLASSCLASS` (`classid`),
   CONSTRAINT `CC_CLASSCLASS` FOREIGN KEY (`classid`) REFERENCES `cc_courseclass` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of ct_classtime
 -- ----------------------------
-INSERT INTO `ct_classtime` VALUES ('1', '1', '1_1_3', '1', '16');
-INSERT INTO `ct_classtime` VALUES ('2', '1', '1_1_5', '2', '16');
-INSERT INTO `ct_classtime` VALUES ('3', '2', '1_1_7', '1', '16');
+INSERT INTO `ct_classtime` VALUES ('5', '6', '1_1_3', '1', '16');
+INSERT INTO `ct_classtime` VALUES ('6', '6', '2_1_5', '2', '80');
+INSERT INTO `ct_classtime` VALUES ('8', '7', '1_2_1', '1', '8');
 
 -- ----------------------------
 -- Table structure for c_course
@@ -90,13 +89,12 @@ CREATE TABLE `c_course` (
   PRIMARY KEY (`id`),
   KEY `UC_USERCOURSE` (`userid`),
   CONSTRAINT `UC_USERCOURSE` FOREIGN KEY (`userid`) REFERENCES `u_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of c_course
 -- ----------------------------
-INSERT INTO `c_course` VALUES ('1', '操作系统', '1');
-INSERT INTO `c_course` VALUES ('2', '数据库', '3');
+INSERT INTO `c_course` VALUES ('4', '如何通宵不猝死', '6');
 
 -- ----------------------------
 -- Table structure for s_sign
@@ -108,20 +106,20 @@ CREATE TABLE `s_sign` (
   `classid` int(11) DEFAULT NULL,
   `timestamp` int(20) DEFAULT NULL,
   `situation` int(2) DEFAULT NULL COMMENT '0-旷课，1-迟到，2-正常签到',
-  `index` int(5) DEFAULT NULL,
+  `indexs` int(5) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `US_USER` (`userid`),
   KEY `US_CLASS` (`classid`),
   CONSTRAINT `US_CLASS` FOREIGN KEY (`classid`) REFERENCES `cc_courseclass` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `US_USER` FOREIGN KEY (`userid`) REFERENCES `u_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of s_sign
 -- ----------------------------
-INSERT INTO `s_sign` VALUES ('1', '1', '1', '1477275166', '1', '1');
-INSERT INTO `s_sign` VALUES ('2', '2', '1', '1477275366', '2', '1');
-INSERT INTO `s_sign` VALUES ('3', '3', '2', '1477275166', '2', '1');
+INSERT INTO `s_sign` VALUES ('10', '7', '6', '1477482792', '2', '1');
+INSERT INTO `s_sign` VALUES ('19', '8', '7', '1477650450', '3', '1');
+INSERT INTO `s_sign` VALUES ('20', '9', '6', '1477650450', '1', '1');
 
 -- ----------------------------
 -- Table structure for u_user
@@ -130,16 +128,18 @@ DROP TABLE IF EXISTS `u_user`;
 CREATE TABLE `u_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` varchar(25) DEFAULT '',
-  `password` varchar(50) DEFAULT '',
+  `password` varchar(200) DEFAULT '',
   `nickname` varchar(50) DEFAULT '',
   `role` int(2) DEFAULT '1' COMMENT '0-管理员，1-学生，2-老师',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of u_user
 -- ----------------------------
-INSERT INTO `u_user` VALUES ('1', '123', '1234', 'gy', '2');
-INSERT INTO `u_user` VALUES ('2', 'admin', 'admin', 'admin', '0');
-INSERT INTO `u_user` VALUES ('3', '321', '321', 'ss', '2');
-INSERT INTO `u_user` VALUES ('4', 'ss', 'ss', 'ss', '2');
+INSERT INTO `u_user` VALUES ('1', 'admin', '$2a$10$RtCDFfOKE82JwsO4XOkSk.dyG9098Q.91PLsO8OiqlVtEGeUoo0mC', 'admin', '0');
+INSERT INTO `u_user` VALUES ('6', '123456', '$2a$10$VigM.mEg4ggNAYWfwEdD9OHQ5S/k9z0IhF7nvYnnYoqrRebaCc4oK', '王鹭雄', '2');
+INSERT INTO `u_user` VALUES ('7', '123456789', '$2a$10$8Zz.oaYXNOASLk8f63WSQuh4WN5Ce2oEtjkKWdUVcQn596iqHHmmq', '韦笑颖', '1');
+INSERT INTO `u_user` VALUES ('8', '12345678', '$2a$10$8MklRo3yE56JyrvWi0joCe9hS46eMQUQm4WpFvwjRsFb6qpVhUUFm', '涂蕾', '1');
+INSERT INTO `u_user` VALUES ('9', '12345', '$2a$10$OX0ZnwIM20Wb4ttFVmSlG.27qYKNABdZjEKmrLkroOSi48eZpd7xW', '郭煜', '1');
+INSERT INTO `u_user` VALUES ('10', '123', '$2a$10$xcyXg.LtBQM.bETmDpy4SuzWDI56xq0oWhn4UiTGnk7U.wdJxZYR2', '123', '0');
