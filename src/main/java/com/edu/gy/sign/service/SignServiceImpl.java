@@ -24,14 +24,16 @@ public class SignServiceImpl implements ISignService{
 	public int addSign(Integer classid, String user_id, Integer countid,Integer courseid,
 			Long createTime, Long signTime) {
 		Integer situation = 2;
-		if(signTime - createTime > 30*60){
-			situation = 1;
-		}
+		
 		Integer userid = userDao.getUserByUserid(user_id).getId();
 		//判断situtation。是否跨班和是否迟到   通过获取的classid获取相应的所有班级，找出该生对应的班级id，
 		Integer finalclassid = classStudentDao.getClassidWithClassidandUserid(courseid, userid, classid);
 		if(finalclassid == classid){
-			situation = 2;
+			if((signTime - createTime) > 30*60){
+				situation = 1;
+			}else{
+				situation = 2;
+			}
 		}else{
 			situation = 3;
 		}

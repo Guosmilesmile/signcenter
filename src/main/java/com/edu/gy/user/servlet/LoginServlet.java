@@ -57,18 +57,23 @@ public class LoginServlet extends HttpServlet {
 			String pwd  = RSAUtils.decryptStringByJs(passWord);
 			System.out.println(pwd);
 			String hashed = BCrypt.hashpw(pwd, BCrypt.gensalt());
+			System.out.println("hashed= "+hashed);
 			userEntity.setPassWord(hashed);
 			userEntity = userDao.AuthenUser(userEntity);
 			String realpw = userEntity.getPassWord();
-			if(BCrypt.checkpw(pwd, realpw)){
-				request.getSession().setAttribute("userid", userName);
-				request.getSession().setAttribute("id", userEntity.getId());
-				request.getSession().setAttribute("role", userEntity.getRole()+"");
-				response.sendRedirect("admin/main.jsp");
-			}else{
-				response.sendRedirect("login.jsp");
+			try{
+				if(BCrypt.checkpw(pwd, realpw)){
+					request.getSession().setAttribute("userid", userName);
+					request.getSession().setAttribute("id", userEntity.getId());
+					request.getSession().setAttribute("role", userEntity.getRole()+"");
+					response.sendRedirect("admin/main.jsp");
+				}else{
+					response.sendRedirect("login.jsp?error=1");
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+				response.sendRedirect("login.jsp?error=1");
 			}
-			
 			/*if(null != userEntity.getId() ){
 				request.getSession().setAttribute("userid", userName);
 				request.getSession().setAttribute("id", userEntity.getId());
