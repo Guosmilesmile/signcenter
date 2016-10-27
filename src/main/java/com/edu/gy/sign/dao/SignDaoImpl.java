@@ -16,6 +16,7 @@ import com.edu.gy.annotation.TableName;
 import com.edu.gy.base.BaseDaoImpl;
 import com.edu.gy.entity.ClassTimeEntity;
 import com.edu.gy.entity.SignEntity;
+import com.edu.gy.entity.UserEntity;
 import com.edu.gy.sign.vo.SignChartVO;
 import com.edu.gy.sign.vo.SignVO;
 import com.edu.gy.utils.DBUtil;
@@ -65,6 +66,70 @@ public class SignDaoImpl extends BaseDaoImpl<SignEntity> implements ISignDao{
 			}
 		}
 		return list;
+	}
+	
+	@Override
+	public List<SignVO> getSignVOs(Integer classid,Integer countid) {
+		if(null==classid){
+			return null;
+		}
+		if(null==countid){
+			return null;
+		}
+		List<UserEntity> userList = new ArrayList<UserEntity>();
+		Connection con = null;
+		PreparedStatement pre = null;
+		ResultSet resultSet = null;
+		try {
+			con = DBUtil.openConnection();
+			String sql = "select u.id,u.userid,u.nickname from cs_classstudent as cs,u_user as u where classid = ? and u.id = cs.userid";
+			System.out.println(sql);
+			pre = con.prepareStatement(sql);
+			pre.setInt(1, classid);
+			resultSet = pre.executeQuery();
+			while(resultSet.next()){
+				Integer id = resultSet.getInt(1);
+				String userid = resultSet.getString(2);
+				String nickname = resultSet.getString(3);
+				UserEntity item = new UserEntity(id, userid, null, nickname, null);
+				userList.add(item);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		List<SignVO> signList = new ArrayList<SignVO>();
+		try {
+			for(UserEntity item : userList){
+				String sql = "select situation,timestamp from s_sign as s where s.userid = ? and s.indexs = ?";
+				System.out.println(sql);
+				pre = con.prepareStatement(sql);
+				pre.setInt(1, item.getId());
+				pre.setInt(2, countid);
+				resultSet = pre.executeQuery();
+				if(resultSet.next()){
+					String situation = resultSet.getString(1);
+					String signtime = resultSet.getString(2);
+					SignVO signVO = new SignVO(item.getUserId(), item.getNickName(), signtime, situation);
+					signList.add(signVO);
+				}else{
+					String situation = 0+"";
+					String signtime = 0+"";
+					SignVO signVO = new SignVO(item.getUserId(), item.getNickName(), signtime, situation);
+					signList.add(signVO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				resultSet.close();
+				pre.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return signList;
 	}
 
 	@Override

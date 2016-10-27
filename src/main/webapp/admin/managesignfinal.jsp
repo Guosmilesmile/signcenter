@@ -52,7 +52,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			collapsible : true, //可折叠
 			pageSize: 50,//每页显示的记录条数，默认为10  
 	        pageList: [5,10,15,20,25,50,100],//可以设置每页记录条数的列表  
-	        pagination: true,//是否这是分页
+	        pagination: false,//是否这是分页
 			rownumbers:true,
 			frozenColumns:[[
 				{field: 'ck', checkbox: true},          
@@ -118,7 +118,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			
 		});
 		//分页设置
-		var p = $('#grid').datagrid('getPager');
+		/* var p = $('#grid').datagrid('getPager');
 		$(p).pagination({
 	        beforePageText: '第',//页数文本框前显示的汉字  
 	        afterPageText: '页    共 {pages} 页',  
@@ -127,7 +127,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$(this).datagrid('reload'); 
 				//获取数据库全部数据
 			},
-		});
+		}); */
 		$('#searchdialog').dialog('close');
 	};
 	 //--------------------------保存数据-----------------------------

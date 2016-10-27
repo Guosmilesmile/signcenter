@@ -47,8 +47,8 @@ public class getSignDetalDataServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
-		int pageSize = Integer.parseInt(request.getParameter("rows"));
-		int page = Integer.parseInt(request.getParameter("page"));
+		//int pageSize = Integer.parseInt(request.getParameter("rows"));
+		//int page = Integer.parseInt(request.getParameter("page"));
 		String temp  = request.getParameter("classid");
 		if(TextUtils.isEmpty(temp)){
 			response.getWriter().write("");
@@ -62,10 +62,11 @@ public class getSignDetalDataServlet extends HttpServlet {
 		}
 		int countid = Integer.parseInt(temp1);
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<SignVO> list = signDao.getSignVOs( (page-1)*pageSize, pageSize,classid, countid);
-		Integer total = signDao.getSignVOsCount(classid);
+		//List<SignVO> list = signDao.getSignVOs( (page-1)*pageSize, pageSize,classid, countid);
+		List<SignVO> list = signDao.getSignVOs(classid, countid);
+		//Integer total = signDao.getSignVOsCount(classid);
 		map.put("rows", list);
-		map.put("total", total);
+		//map.put("total", total);
 		response.getWriter().write(FastJsonTool.createJsonString(map));
 	}
 
