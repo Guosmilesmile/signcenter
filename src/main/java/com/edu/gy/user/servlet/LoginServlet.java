@@ -52,7 +52,7 @@ public class LoginServlet extends HttpServlet {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setUserId(userName);
 		userEntity.setPassWord(passWord);
-		
+		System.out.println("rsa:"+passWord);
 		if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(passWord)){
 			String pwd  = RSAUtils.decryptStringByJs(passWord);
 			System.out.println(pwd);

@@ -13,6 +13,7 @@ import com.edu.gy.entity.UserEntity;
 import com.edu.gy.user.dao.UserDaoImpl;
 import com.edu.gy.user.dao.IUserDao;
 import com.edu.gy.utils.FastJsonTool;
+import com.edu.gy.utils.RSAUtils;
 import com.edu.gy.utils.TextUtils;
 
 /**
@@ -46,10 +47,11 @@ public class appLogin extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		String userName = request.getParameter("username");
 		String passWord = request.getParameter("password");
-		UserEntity userEntity = new UserEntity();
-		userEntity.setUserId(userName);
-		userEntity.setPassWord(passWord);
 		if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(passWord)){
+			String encryptString = RSAUtils.decryptString(passWord);
+			UserEntity userEntity = new UserEntity();
+			userEntity.setUserId(userName);
+			userEntity.setPassWord(encryptString);
 			userEntity = userDao.AuthenUser(userEntity);
 			if(null != userEntity.getId()){
 				responseStateVO.setMessage("登陆成功");

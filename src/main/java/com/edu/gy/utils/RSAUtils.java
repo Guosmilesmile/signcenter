@@ -205,6 +205,8 @@ public abstract class RSAUtils {
         return null;
     }
     
+    
+    
     /**
      * 根据给定的16进制系数和专用指数字符串构造一个RSA专用的私钥对象。
      * 
@@ -310,6 +312,7 @@ public abstract class RSAUtils {
         }
         return null;
     }
+    
     
     /**
      * 使用默认的公钥加密给定的字符串。
@@ -424,5 +427,15 @@ public abstract class RSAUtils {
     	publicKeyMap.setModulus(new String(Hex.encodeHex(rsaPublicKey.getModulus().toByteArray())));
 		publicKeyMap.setExponent(new String(Hex.encodeHex(rsaPublicKey.getPublicExponent().toByteArray())));
 		return publicKeyMap;
+    }
+    
+    public static void main(String[] args) throws DecoderException {
+    	byte[] exp = Hex.decodeHex("010001".toCharArray());
+    	byte[] model = Hex.decodeHex("0086a59f701b449dea3e89ddfe3d886d872f0c1049d8c5df32283196c3369766450ba28217f642e528fcf8b7907d7532a59acdfa87461bf3ae99b49888b5a9f287b75df63f3bbf7b45df3aad79ca90135a7a66be1ab694873dfe8d5fb8d6a23e01857e067b1b4a3d954fba910bbc41176e9d97be63ec51c23775f89ac361ac8e11".toCharArray());
+		RSAPublicKey generateRSAPublicKey = generateRSAPublicKey(model, exp);
+		String encryptString = encryptString(generateRSAPublicKey, "admin");
+		System.out.println(encryptString);
+		String decryptString = decryptString(encryptString);
+		System.out.println(decryptString);
     }
 }
