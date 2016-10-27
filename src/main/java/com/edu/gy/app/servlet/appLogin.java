@@ -49,20 +49,25 @@ public class appLogin extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		String userName = request.getParameter("username");
 		String passWord = request.getParameter("password");
-		if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(passWord)){
-			String encryptString = RSAUtils.decryptString(passWord);
-			UserEntity userEntity = new UserEntity();
-			userEntity.setUserId(userName);
-			userEntity.setPassWord(encryptString);
-			userEntity = userDao.AuthenUser(userEntity);
-			if(BCrypt.checkpw(passWord, userEntity.getPassWord())){
-				responseStateVO.setMessage("登陆成功");
-				responseStateVO.setStatus("success");
+		try {
+			if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(passWord)){
+				String encryptString = RSAUtils.decryptString(passWord);
+				UserEntity userEntity = new UserEntity();
+				userEntity.setUserId(userName);
+				userEntity.setPassWord(encryptString);
+				userEntity = userDao.AuthenUser(userEntity);
+				if(BCrypt.checkpw(passWord, userEntity.getPassWord())){
+					responseStateVO.setMessage("登陆成功");
+					responseStateVO.setStatus("success");
+				}else{
+					responseStateVO.setMessage("账号密码不匹配或者不存在");
+					responseStateVO.setStatus("fail");
+				}
 			}else{
 				responseStateVO.setMessage("账号密码不匹配或者不存在");
 				responseStateVO.setStatus("fail");
 			}
-		}else{
+		} catch (Exception e) {
 			responseStateVO.setMessage("账号密码不匹配或者不存在");
 			responseStateVO.setStatus("fail");
 		}
