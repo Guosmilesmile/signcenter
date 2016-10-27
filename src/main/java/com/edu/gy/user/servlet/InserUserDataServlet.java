@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.edu.gy.entity.UserEntity;
 import com.edu.gy.user.dao.IUserDao;
 import com.edu.gy.user.dao.UserDaoImpl;
@@ -49,6 +51,8 @@ public class InserUserDataServlet extends HttpServlet {
 		if(list.size()>0){
 			userEntity = list.get(0);
 		}
+		String hashed = BCrypt.hashpw(userEntity.getPassWord(), BCrypt.gensalt());
+		userEntity.setPassWord(hashed);
 		int insertData = userdao.insertData(userEntity);
 		response.getWriter().write(insertData+"");
 	}

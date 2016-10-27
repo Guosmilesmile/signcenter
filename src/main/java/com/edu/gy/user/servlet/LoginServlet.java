@@ -11,10 +11,12 @@ import javax.swing.plaf.TextUI;
 import javax.xml.soap.Text;
 
 import org.json.JSONArray;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.edu.gy.entity.UserEntity;
 import com.edu.gy.user.dao.IUserDao;
 import com.edu.gy.user.dao.UserDaoImpl;
+import com.edu.gy.utils.RSAUtils;
 import com.edu.gy.utils.TextUtils;
 
 /**
@@ -50,9 +52,15 @@ public class LoginServlet extends HttpServlet {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setUserId(userName);
 		userEntity.setPassWord(passWord);
+		
 		if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(passWord)){
+			String pwd  = RSAUtils.decryptStringByJs(passWord);
+			System.out.println(pwd);
+			String hashed = BCrypt.hashpw(pwd, BCrypt.gensalt());
+			userEntity.setPassWord(hashed);
 			userEntity = userDao.AuthenUser(userEntity);
-			if(null != userEntity.getId() ){
+			String realpw = userEntity.getPassWord();
+			if(BCrypt.checkpw(pwd, realpw)){
 				request.getSession().setAttribute("userid", userName);
 				request.getSession().setAttribute("id", userEntity.getId());
 				request.getSession().setAttribute("role", userEntity.getRole()+"");
@@ -60,6 +68,15 @@ public class LoginServlet extends HttpServlet {
 			}else{
 				response.sendRedirect("login.jsp");
 			}
+			
+			/*if(null != userEntity.getId() ){
+				request.getSession().setAttribute("userid", userName);
+				request.getSession().setAttribute("id", userEntity.getId());
+				request.getSession().setAttribute("role", userEntity.getRole()+"");
+				response.sendRedirect("admin/main.jsp");
+			}else{
+				response.sendRedirect("login.jsp");
+			}*/
 		}else{
 			response.sendRedirect("login.jsp?error=1");
 		}

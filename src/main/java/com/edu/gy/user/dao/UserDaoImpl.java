@@ -120,17 +120,18 @@ public class UserDaoImpl extends BaseDaoImpl<UserEntity> implements IUserDao{
 		UserEntity result = new UserEntity();
 		try {
 			con = DBUtil.openConnection();
-			String sql = "select id,role from "+tableName+" where userid =? and password = ?";
+			String sql = "select id,role,password from "+tableName+" where userid =?";
 			System.out.println(sql);
 			pre = con.prepareStatement(sql);
 			pre.setString(1, userEntity.getUserId());
-			pre.setString(2, userEntity.getPassWord());
 			resultSet = pre.executeQuery();
 			while(resultSet.next()){
 				Integer id = resultSet.getInt(1);
 				Integer role = resultSet.getInt(2);
+				String password = resultSet.getString(3);
 				userEntity.setId(id);
 				userEntity.setRole(role);
+				userEntity.setPassWord(password);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
