@@ -56,7 +56,7 @@ public class appLogin extends HttpServlet {
 				userEntity.setUserId(userName);
 				userEntity.setPassWord(encryptString);
 				userEntity = userDao.AuthenUser(userEntity);
-				if(BCrypt.checkpw(passWord, userEntity.getPassWord())){
+				if(BCrypt.checkpw(encryptString, userEntity.getPassWord())){
 					responseStateVO.setMessage("登陆成功");
 					responseStateVO.setStatus("success");
 				}else{
