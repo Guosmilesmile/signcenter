@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.edu.gy.app.vo.ResponseStateVO;
 import com.edu.gy.entity.UserEntity;
 import com.edu.gy.user.dao.UserDaoImpl;
@@ -53,7 +55,7 @@ public class appLogin extends HttpServlet {
 			userEntity.setUserId(userName);
 			userEntity.setPassWord(encryptString);
 			userEntity = userDao.AuthenUser(userEntity);
-			if(null != userEntity.getId()){
+			if(BCrypt.checkpw(passWord, userEntity.getPassWord())){
 				responseStateVO.setMessage("登陆成功");
 				responseStateVO.setStatus("success");
 			}else{
